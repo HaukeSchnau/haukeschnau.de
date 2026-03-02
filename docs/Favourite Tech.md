@@ -1,0 +1,24 @@
+- Effect TS
+- Nix/NixOS/Nix Darwin
+- React
+- TanStack Query
+- TanStack Router / TanStack Start
+- Tailwind CSS
+- React Native
+- Expo
+- Nativewind
+- tRPC
+- Zod
+- Drizzle ORM
+- Turborepo
+- Vite
+- Vitest
+- Bun
+- Node.js
+- Playwright
+- Oxlint/Oxfmt/OXC Toolchain
+- TypeScript
+- Jujutsu VCS
+- Astro
+- shadcn/ui
+- OpenAI Codex
