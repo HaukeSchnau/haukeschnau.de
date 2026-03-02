@@ -1,0 +1,921 @@
+---
+import "../styles/global.css";
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Hauke Schnau — Software Developer</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+		<style>
+			*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+			:root {
+				--bg: #050505;
+				--card-bg: rgba(255, 255, 255, 0.03);
+				--card-border: rgba(255, 255, 255, 0.06);
+				--text-primary: #f0eded;
+				--text-secondary: #7a7a7a;
+				--purple: #a855f7;
+				--cyan: #06b6d4;
+				--rose: #f43f5e;
+				--emerald: #10b981;
+				--font-heading: 'Syne', sans-serif;
+				--font-body: 'Instrument Sans', sans-serif;
+				--font-mono: 'Space Mono', monospace;
+			}
+
+			html { scroll-behavior: smooth; }
+
+			body {
+				background: var(--bg);
+				color: var(--text-primary);
+				font-family: var(--font-body);
+				line-height: 1.7;
+				overflow-x: hidden;
+				-webkit-font-smoothing: antialiased;
+			}
+
+			h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); line-height: 1.2; }
+
+			/* Grain overlay */
+			.grain-overlay {
+				position: fixed;
+				inset: 0;
+				z-index: 1000;
+				pointer-events: none;
+				opacity: 0.022;
+				background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+				background-repeat: repeat;
+				background-size: 256px 256px;
+			}
+
+			/* Gradient orbs */
+			.orb {
+				position: fixed;
+				border-radius: 50%;
+				filter: blur(140px);
+				opacity: 0.18;
+				pointer-events: none;
+				z-index: 0;
+				will-change: transform;
+			}
+			.orb-1 {
+				width: 600px; height: 600px;
+				background: radial-gradient(circle, #7c3aed 0%, #a855f7 100%);
+				top: -10%; left: -5%;
+				animation: orbit1 28s ease-in-out infinite;
+			}
+			.orb-2 {
+				width: 500px; height: 500px;
+				background: radial-gradient(circle, #0ea5e9 0%, #06b6d4 100%);
+				top: 30%; right: -10%;
+				animation: orbit2 34s ease-in-out infinite;
+			}
+			.orb-3 {
+				width: 450px; height: 450px;
+				background: radial-gradient(circle, #f43f5e 0%, #e11d48 100%);
+				bottom: 10%; left: 15%;
+				animation: orbit3 22s ease-in-out infinite;
+				opacity: 0.14;
+			}
+			.orb-4 {
+				width: 400px; height: 400px;
+				background: radial-gradient(circle, #10b981 0%, #059669 100%);
+				bottom: 40%; right: 20%;
+				animation: orbit4 38s ease-in-out infinite;
+				opacity: 0.12;
+			}
+
+			@keyframes orbit1 {
+				0%, 100% { transform: translate(0, 0) scale(1); }
+				25% { transform: translate(80px, 60px) scale(1.05); }
+				50% { transform: translate(40px, 120px) scale(0.95); }
+				75% { transform: translate(-60px, 40px) scale(1.02); }
+			}
+			@keyframes orbit2 {
+				0%, 100% { transform: translate(0, 0) scale(1); }
+				25% { transform: translate(-70px, 80px) scale(0.97); }
+				50% { transform: translate(-120px, 30px) scale(1.04); }
+				75% { transform: translate(-40px, -60px) scale(0.98); }
+			}
+			@keyframes orbit3 {
+				0%, 100% { transform: translate(0, 0) scale(1); }
+				33% { transform: translate(100px, -50px) scale(1.06); }
+				66% { transform: translate(-70px, -80px) scale(0.94); }
+			}
+			@keyframes orbit4 {
+				0%, 100% { transform: translate(0, 0) scale(1); }
+				20% { transform: translate(-60px, 40px) scale(1.03); }
+				40% { transform: translate(50px, 90px) scale(0.96); }
+				60% { transform: translate(80px, -30px) scale(1.05); }
+				80% { transform: translate(-40px, -70px) scale(0.98); }
+			}
+
+			/* Floating particles */
+			.particle {
+				position: fixed;
+				border-radius: 50%;
+				background: rgba(255, 255, 255, 0.15);
+				pointer-events: none;
+				z-index: 1;
+				will-change: transform;
+			}
+			.p1 { width: 3px; height: 3px; top: 12%; left: 20%; animation: drift1 24s ease-in-out infinite; }
+			.p2 { width: 2px; height: 2px; top: 25%; left: 70%; animation: drift2 30s ease-in-out infinite; }
+			.p3 { width: 4px; height: 4px; top: 40%; left: 40%; animation: drift3 20s ease-in-out infinite; opacity: 0.2; }
+			.p4 { width: 2px; height: 2px; top: 55%; left: 85%; animation: drift1 26s ease-in-out infinite; }
+			.p5 { width: 3px; height: 3px; top: 70%; left: 15%; animation: drift2 32s ease-in-out infinite; }
+			.p6 { width: 2px; height: 2px; top: 80%; left: 55%; animation: drift3 28s ease-in-out infinite; }
+			.p7 { width: 4px; height: 4px; top: 15%; left: 90%; animation: drift1 22s ease-in-out infinite; opacity: 0.18; }
+			.p8 { width: 2px; height: 2px; top: 35%; left: 10%; animation: drift2 36s ease-in-out infinite; }
+			.p9 { width: 3px; height: 3px; top: 60%; left: 65%; animation: drift3 25s ease-in-out infinite; }
+			.p10 { width: 2px; height: 2px; top: 90%; left: 35%; animation: drift1 29s ease-in-out infinite; }
+
+			@keyframes drift1 {
+				0%, 100% { transform: translate(0, 0); opacity: 0.15; }
+				50% { transform: translate(30px, -20px); opacity: 0.3; }
+			}
+			@keyframes drift2 {
+				0%, 100% { transform: translate(0, 0); opacity: 0.1; }
+				50% { transform: translate(-25px, 25px); opacity: 0.25; }
+			}
+			@keyframes drift3 {
+				0%, 100% { transform: translate(0, 0); opacity: 0.12; }
+				50% { transform: translate(20px, 30px); opacity: 0.28; }
+			}
+
+			/* Glass card base */
+			.glass {
+				background: var(--card-bg);
+				backdrop-filter: blur(24px);
+				-webkit-backdrop-filter: blur(24px);
+				border: 1px solid var(--card-border);
+				border-radius: 16px;
+			}
+			.glass-hover {
+				transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+							box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+							border-color 0.4s ease;
+			}
+			.glass-hover:hover {
+				transform: translateY(-4px);
+				box-shadow: 0 8px 40px rgba(168, 85, 247, 0.08), 0 0 60px rgba(6, 182, 212, 0.06);
+				border-color: rgba(255, 255, 255, 0.1);
+			}
+
+			/* Gradient text */
+			.gradient-text {
+				background: linear-gradient(135deg, #c084fc, #22d3ee);
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				background-clip: text;
+			}
+			.gradient-text-rose {
+				background: linear-gradient(135deg, #f43f5e, #a855f7);
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				background-clip: text;
+			}
+
+			/* Scroll indicator */
+			.scroll-indicator {
+				animation: scrollBounce 2s ease-in-out infinite;
+			}
+			@keyframes scrollBounce {
+				0%, 100% { transform: translateY(0); opacity: 0.4; }
+				50% { transform: translateY(10px); opacity: 0.8; }
+			}
+
+			/* Section animation */
+			.reveal {
+				opacity: 0;
+				transform: translateY(40px);
+				transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+							transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+			}
+			.reveal.visible {
+				opacity: 1;
+				transform: translateY(0);
+			}
+
+			/* Sticky nav */
+			.nav-glass {
+				background: rgba(5, 5, 5, 0.6);
+				backdrop-filter: blur(20px);
+				-webkit-backdrop-filter: blur(20px);
+				border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+			}
+
+			/* Pill tags */
+			.pill {
+				display: inline-block;
+				padding: 4px 12px;
+				border-radius: 999px;
+				font-size: 0.8rem;
+				font-family: var(--font-mono);
+				background: rgba(255, 255, 255, 0.04);
+				border: 1px solid rgba(255, 255, 255, 0.06);
+				color: var(--text-secondary);
+				transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+			}
+			.pill:hover {
+				background: rgba(255, 255, 255, 0.08);
+				color: var(--text-primary);
+				border-color: rgba(255, 255, 255, 0.12);
+			}
+			.pill-star {
+				color: var(--purple);
+				border-color: rgba(168, 85, 247, 0.2);
+				background: rgba(168, 85, 247, 0.06);
+			}
+
+			/* Timeline */
+			.timeline-line {
+				position: absolute;
+				left: 16px;
+				top: 0;
+				bottom: 0;
+				width: 1px;
+				background: linear-gradient(to bottom, rgba(168, 85, 247, 0.3), rgba(6, 182, 212, 0.3), rgba(168, 85, 247, 0.1));
+			}
+			.timeline-dot {
+				position: absolute;
+				left: 10px;
+				top: 6px;
+				width: 13px;
+				height: 13px;
+				border-radius: 50%;
+				background: linear-gradient(135deg, #a855f7, #06b6d4);
+				box-shadow: 0 0 12px rgba(168, 85, 247, 0.4);
+				z-index: 2;
+			}
+
+			/* Placeholder preview */
+			.preview-placeholder {
+				background: rgba(255, 255, 255, 0.015);
+				border: 1px solid rgba(255, 255, 255, 0.05);
+				border-radius: 12px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: var(--text-secondary);
+				font-family: var(--font-mono);
+				font-size: 0.85rem;
+				position: relative;
+				overflow: hidden;
+			}
+			.preview-placeholder::before {
+				content: '';
+				position: absolute;
+				inset: 0;
+				border-radius: 12px;
+				padding: 1px;
+				background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(6, 182, 212, 0.15));
+				-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+				mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+				-webkit-mask-composite: xor;
+				mask-composite: exclude;
+			}
+
+			/* Gradient button */
+			.btn-gradient {
+				display: inline-flex;
+				align-items: center;
+				gap: 8px;
+				padding: 14px 32px;
+				border-radius: 12px;
+				font-family: var(--font-heading);
+				font-weight: 600;
+				font-size: 1rem;
+				color: white;
+				background: linear-gradient(135deg, #a855f7, #06b6d4);
+				border: none;
+				cursor: pointer;
+				transition: transform 0.3s ease, box-shadow 0.3s ease;
+				text-decoration: none;
+			}
+			.btn-gradient:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 8px 30px rgba(168, 85, 247, 0.3), 0 0 60px rgba(6, 182, 212, 0.15);
+			}
+
+			/* Category glow colors */
+			.glow-purple { box-shadow: 0 0 40px rgba(168, 85, 247, 0.04); }
+			.glow-purple:hover { box-shadow: 0 0 60px rgba(168, 85, 247, 0.1), 0 4px 30px rgba(168, 85, 247, 0.06); }
+			.glow-cyan { box-shadow: 0 0 40px rgba(6, 182, 212, 0.04); }
+			.glow-cyan:hover { box-shadow: 0 0 60px rgba(6, 182, 212, 0.1), 0 4px 30px rgba(6, 182, 212, 0.06); }
+			.glow-rose { box-shadow: 0 0 40px rgba(244, 63, 94, 0.04); }
+			.glow-rose:hover { box-shadow: 0 0 60px rgba(244, 63, 94, 0.1), 0 4px 30px rgba(244, 63, 94, 0.06); }
+			.glow-emerald { box-shadow: 0 0 40px rgba(16, 185, 129, 0.04); }
+			.glow-emerald:hover { box-shadow: 0 0 60px rgba(16, 185, 129, 0.1), 0 4px 30px rgba(16, 185, 129, 0.06); }
+
+			/* Photo frames */
+			.photo-frame {
+				position: relative;
+				overflow: hidden;
+				border-radius: 16px;
+			}
+			.photo-frame::before {
+				content: '';
+				position: absolute;
+				inset: 0;
+				border-radius: 16px;
+				padding: 1px;
+				background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(6, 182, 212, 0.2), rgba(244, 63, 94, 0.1));
+				-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+				mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+				-webkit-mask-composite: xor;
+				mask-composite: exclude;
+			}
+
+			/* Section spacing */
+			.section-gap { padding: 120px 0; }
+
+			/* Content container */
+			.container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+			/* Blog date tag */
+			.date-tag {
+				font-family: var(--font-mono);
+				font-size: 0.75rem;
+				color: var(--purple);
+				letter-spacing: 0.05em;
+			}
+
+			/* Contact links */
+			.contact-link {
+				color: var(--text-secondary);
+				text-decoration: none;
+				transition: color 0.3s ease;
+				font-family: var(--font-mono);
+				font-size: 0.9rem;
+			}
+			.contact-link:hover { color: var(--text-primary); }
+
+			/* Layout utilities */
+			.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+			.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+			.stack { display: flex; flex-direction: column; gap: 2rem; }
+			.stack-lg { display: flex; flex-direction: column; gap: 4rem; }
+			.row { display: flex; align-items: center; }
+			.wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+			.space-y > * + * { margin-top: 1.5rem; }
+			.text-center { text-align: center; }
+
+			/* Responsive */
+			@media (max-width: 1024px) {
+				.grid-3 { grid-template-columns: repeat(2, 1fr); }
+			}
+			@media (max-width: 768px) {
+				.section-gap { padding: 80px 0; }
+				.orb { filter: blur(80px); opacity: 0.15; }
+				.orb-1 { width: 350px; height: 350px; }
+				.orb-2 { width: 300px; height: 300px; }
+				.orb-3 { width: 250px; height: 250px; }
+				.orb-4 { width: 200px; height: 200px; }
+				.grid-3, .grid-2 { grid-template-columns: 1fr; }
+				.photos-grid { grid-template-columns: 1fr !important; }
+				.photos-grid .span-2 { grid-column: auto !important; grid-row: auto !important; }
+				.project-row { flex-direction: column !important; }
+				.project-preview { width: 100% !important; }
+			}
+
+			@media (max-width: 640px) {
+				.container { padding: 0 16px; }
+			}
+
+			/* Value index number */
+			.value-index {
+				font-family: var(--font-mono);
+				font-size: 0.75rem;
+				color: rgba(168, 85, 247, 0.4);
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Grain overlay -->
+		<div class="grain-overlay"></div>
+
+		<!-- Gradient orbs -->
+		<div class="orb orb-1"></div>
+		<div class="orb orb-2"></div>
+		<div class="orb orb-3"></div>
+		<div class="orb orb-4"></div>
+
+		<!-- Particles -->
+		<div class="particle p1"></div>
+		<div class="particle p2"></div>
+		<div class="particle p3"></div>
+		<div class="particle p4"></div>
+		<div class="particle p5"></div>
+		<div class="particle p6"></div>
+		<div class="particle p7"></div>
+		<div class="particle p8"></div>
+		<div class="particle p9"></div>
+		<div class="particle p10"></div>
+
+		<!-- Navigation -->
+		<nav class="nav-glass fixed top-0 left-0 right-0 z-50">
+			<div class="container" style="display: flex; align-items: center; justify-content: space-between; height: 4rem;">
+				<a href="/" class="text-sm font-medium tracking-wide" style="font-family: var(--font-heading); color: var(--text-primary); text-decoration: none;">
+					Hauke Schnau
+				</a>
+				<div style="display: flex; align-items: center; gap: 1.5rem;">
+					<a href="#about" class="text-xs tracking-wide hidden md:inline" style="color: var(--text-secondary); text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#f0eded'" onmouseout="this.style.color='#7a7a7a'">About</a>
+					<a href="#stack" class="text-xs tracking-wide hidden md:inline" style="color: var(--text-secondary); text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#f0eded'" onmouseout="this.style.color='#7a7a7a'">Stack</a>
+					<a href="#projects" class="text-xs tracking-wide hidden md:inline" style="color: var(--text-secondary); text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#f0eded'" onmouseout="this.style.color='#7a7a7a'">Projects</a>
+					<a href="#career" class="text-xs tracking-wide hidden md:inline" style="color: var(--text-secondary); text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#f0eded'" onmouseout="this.style.color='#7a7a7a'">Career</a>
+					<a href="#contact" class="text-xs tracking-wide hidden md:inline" style="color: var(--text-secondary); text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#f0eded'" onmouseout="this.style.color='#7a7a7a'">Contact</a>
+					<a href="/" class="text-xs tracking-wide" style="color: var(--text-secondary); text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#f0eded'" onmouseout="this.style.color='#7a7a7a'">← Back to designs</a>
+				</div>
+			</div>
+		</nav>
+
+		<!-- Hero -->
+		<section class="relative z-10 min-h-screen flex flex-col items-center justify-center text-center" style="padding-top: 80px;">
+			<div class="container" style="opacity: 1;">
+				<p class="text-sm tracking-widest uppercase mb-6" style="color: var(--text-secondary); font-family: var(--font-mono);">Software Developer</p>
+				<h1 class="gradient-text" style="font-size: clamp(3.5rem, 10vw, 8rem); font-weight: 800; margin-bottom: 1.5rem; letter-spacing: -0.03em; line-height: 1.05;">
+					Hauke Schnau
+				</h1>
+				<p class="text-base sm:text-lg max-w-2xl mx-auto mb-4" style="color: var(--text-secondary); line-height: 1.8;">
+					Crafting type-safe systems at the intersection of modern TypeScript and AI-native engineering
+				</p>
+				<p class="text-sm mb-10" style="color: var(--text-secondary); font-family: var(--font-mono);">
+					📍 Hamburg / Bremen, Germany
+				</p>
+				<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; margin-bottom: 4rem;">
+					<span class="pill">3+ Years Experience</span>
+					<span class="pill">GPA 1.47</span>
+					<span class="pill">Two Offers on the Table</span>
+				</div>
+				<div class="scroll-indicator" style="display: flex; justify-content: center;">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--text-secondary);">
+						<path d="M12 5v14M5 12l7 7 7-7"/>
+					</svg>
+				</div>
+			</div>
+		</section>
+
+		<!-- About -->
+		<section id="about" class="section-gap relative z-10">
+			<div class="container reveal">
+				<p style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; color: var(--purple); font-family: var(--font-mono);">01 — About</p>
+				<h2 style="font-size: clamp(1.875rem, 4vw, 2.25rem); font-weight: 700; margin-bottom: 3rem; font-family: var(--font-heading);">
+					<span class="gradient-text">Who I am</span>
+				</h2>
+				<div class="glass glass-hover" style="padding: 2rem 3rem; max-width: 56rem; border-radius: 24px;">
+					<div class="space-y" style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.9;">
+						<p>I'm a twenty-three-year-old software developer who started shipping production code at nineteen. My path has taken me from building property management apps with Spring Boot, through Germany's largest comparison portal Check24 (where I earned their highest performance rating), to leading frontend development and architecture at Buildlinx.</p>
+						<p>I think in types. TypeScript end-to-end — from database schemas through tRPC APIs to React components — because runtime errors should be compile-time errors. I live in the bleeding edge of the TS ecosystem: Effect TS for composable error handling, Zod for runtime validation, TanStack for state and routing.</p>
+						<p>My development workflow is <span style="color: var(--text-primary);">AI-native</span>. Cursor, Claude, and OpenAI Codex aren't experiments — they're how I ship. My technical lead at Buildlinx was impressed by how concise my prompts are. That precision carries through to everything I build.</p>
+						<p>Currently weighing two offers: <span style="color: var(--text-primary);">Check24 at ~63k</span> (Professional Developer) and <span style="color: var(--text-primary);">Buildlinx at 64k</span> (Software Developer with Architecture Responsibility). Looking for the environment where modern TypeScript, AI tooling, and engineering excellence aren't just tolerated — they're expected.</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Tech Stack -->
+		<section id="stack" class="section-gap relative z-10">
+			<div class="container reveal">
+				<p style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; color: var(--cyan); font-family: var(--font-mono);">02 — Tech Stack</p>
+				<h2 style="font-size: clamp(1.875rem, 4vw, 2.25rem); font-weight: 700; margin-bottom: 3rem; font-family: var(--font-heading);">
+					<span class="gradient-text">Tools of the trade</span>
+				</h2>
+				<div class="grid-3">
+					<div class="glass glass-hover glow-purple" style="padding: 1.5rem; border-radius: 20px;">
+						<h3 style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; font-family: var(--font-heading); color: var(--purple);">Languages</h3>
+						<div class="wrap">
+							<span class="pill pill-star">TypeScript ★</span>
+							<span class="pill">Go</span>
+							<span class="pill">PHP</span>
+							<span class="pill">Python</span>
+							<span class="pill">Java</span>
+						</div>
+					</div>
+					<div class="glass glass-hover glow-cyan" style="padding: 1.5rem; border-radius: 20px;">
+						<h3 style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; font-family: var(--font-heading); color: var(--cyan);">Frontend</h3>
+						<div class="wrap">
+							<span class="pill">React</span>
+							<span class="pill">React Native</span>
+							<span class="pill">Next.js</span>
+							<span class="pill">Expo</span>
+							<span class="pill">Tailwind CSS</span>
+							<span class="pill">shadcn/ui</span>
+						</div>
+					</div>
+					<div class="glass glass-hover glow-purple" style="padding: 1.5rem; border-radius: 20px;">
+						<h3 style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; font-family: var(--font-heading); color: var(--purple);">Backend</h3>
+						<div class="wrap">
+							<span class="pill">Node.js</span>
+							<span class="pill">Bun</span>
+							<span class="pill">tRPC</span>
+							<span class="pill">Drizzle ORM</span>
+							<span class="pill">Symfony</span>
+						</div>
+					</div>
+					<div class="glass glass-hover glow-rose" style="padding: 1.5rem; border-radius: 20px;">
+						<h3 style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; font-family: var(--font-heading); color: var(--rose);">Type Safety</h3>
+						<div class="wrap">
+							<span class="pill">Zod</span>
+							<span class="pill">Effect TS</span>
+							<span class="pill">tRPC (end-to-end)</span>
+						</div>
+					</div>
+					<div class="glass glass-hover glow-emerald" style="padding: 1.5rem; border-radius: 20px;">
+						<h3 style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; font-family: var(--font-heading); color: var(--emerald);">Build Pipeline</h3>
+						<div class="wrap">
+							<span class="pill">Vite</span>
+							<span class="pill">Turborepo</span>
+							<span class="pill">OXC Toolchain</span>
+						</div>
+					</div>
+					<div class="glass glass-hover glow-cyan" style="padding: 1.5rem; border-radius: 20px;">
+						<h3 style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; font-family: var(--font-heading); color: var(--cyan);">Testing</h3>
+						<div class="wrap">
+							<span class="pill">Vitest</span>
+							<span class="pill">Playwright</span>
+						</div>
+					</div>
+					<div class="glass glass-hover glow-purple" style="padding: 1.5rem; border-radius: 20px;">
+						<h3 style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; font-family: var(--font-heading); color: var(--purple);">Infrastructure</h3>
+						<div class="wrap">
+							<span class="pill">Docker</span>
+							<span class="pill">NixOS / Nix Darwin</span>
+							<span class="pill">Linux</span>
+						</div>
+					</div>
+					<div class="glass glass-hover glow-rose" style="padding: 1.5rem; border-radius: 20px;">
+						<h3 style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; font-family: var(--font-heading); color: var(--rose);">AI Tooling</h3>
+						<div class="wrap">
+							<span class="pill">OpenAI Codex</span>
+							<span class="pill">Cursor</span>
+							<span class="pill">Claude</span>
+						</div>
+					</div>
+					<div class="glass glass-hover glow-emerald" style="padding: 1.5rem; border-radius: 20px;">
+						<h3 style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; font-family: var(--font-heading); color: var(--emerald);">Version Control</h3>
+						<div class="wrap">
+							<span class="pill">Git</span>
+							<span class="pill">Jujutsu VCS</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Core Values -->
+		<section class="section-gap relative z-10">
+			<div class="container reveal">
+				<p style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; color: var(--rose); font-family: var(--font-mono);">03 — Values</p>
+				<h2 style="font-size: clamp(1.875rem, 4vw, 2.25rem); font-weight: 700; margin-bottom: 4rem; font-family: var(--font-heading);">
+					<span class="gradient-text">What I believe</span>
+				</h2>
+				<div class="stack-lg" style="max-width: 48rem;">
+					<div class="reveal">
+						<span class="value-index">01</span>
+						<h3 style="font-size: clamp(1.5rem, 3vw, 1.875rem); font-weight: 700; margin-top: 0.5rem; margin-bottom: 0.75rem; font-family: var(--font-heading);">
+							<span class="gradient-text">End-to-end type safety</span>
+						</h3>
+						<p style="color: var(--text-secondary); font-size: 1.05rem;">From database to UI. If it compiles, it works.</p>
+					</div>
+					<div class="reveal">
+						<span class="value-index">02</span>
+						<h3 style="font-size: clamp(1.5rem, 3vw, 1.875rem); font-weight: 700; margin-top: 0.5rem; margin-bottom: 0.75rem; font-family: var(--font-heading);">
+							<span class="gradient-text">Developer experience as a multiplier</span>
+						</h3>
+						<p style="color: var(--text-secondary); font-size: 1.05rem;">Great DX compounds daily. Every tool choice matters.</p>
+					</div>
+					<div class="reveal">
+						<span class="value-index">03</span>
+						<h3 style="font-size: clamp(1.5rem, 3vw, 1.875rem); font-weight: 700; margin-top: 0.5rem; margin-bottom: 0.75rem; font-family: var(--font-heading);">
+							<span class="gradient-text-rose">AI-native by default</span>
+						</h3>
+						<p style="color: var(--text-secondary); font-size: 1.05rem;">Cursor, Claude, Codex. Not replacing engineers — amplifying them.</p>
+					</div>
+					<div class="reveal">
+						<span class="value-index">04</span>
+						<h3 style="font-size: clamp(1.5rem, 3vw, 1.875rem); font-weight: 700; margin-top: 0.5rem; margin-bottom: 0.75rem; font-family: var(--font-heading);">
+							<span class="gradient-text">Ship fast, iterate faster</span>
+						</h3>
+						<p style="color: var(--text-secondary); font-size: 1.05rem;">Pragmatism over perfection. Users don't wait for perfect code.</p>
+					</div>
+					<div class="reveal">
+						<span class="value-index">05</span>
+						<h3 style="font-size: clamp(1.5rem, 3vw, 1.875rem); font-weight: 700; margin-top: 0.5rem; margin-bottom: 0.75rem; font-family: var(--font-heading);">
+							<span class="gradient-text">Modern tools, chosen by merit</span>
+						</h3>
+						<p style="color: var(--text-secondary); font-size: 1.05rem;">Not chasing hype. Choosing what makes the team faster.</p>
+					</div>
+					<div class="reveal">
+						<span class="value-index">06</span>
+						<h3 style="font-size: clamp(1.5rem, 3vw, 1.875rem); font-weight: 700; margin-top: 0.5rem; margin-bottom: 0.75rem; font-family: var(--font-heading);">
+							<span class="gradient-text-rose">Local-first architecture</span>
+						</h3>
+						<p style="color: var(--text-secondary); font-size: 1.05rem;">Respect the user. Offline-capable, instant, resilient.</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Projects -->
+		<section id="projects" class="section-gap relative z-10">
+			<div class="container reveal">
+				<p style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; color: var(--emerald); font-family: var(--font-mono);">04 — Projects</p>
+				<h2 style="font-size: clamp(1.875rem, 4vw, 2.25rem); font-weight: 700; margin-bottom: 3rem; font-family: var(--font-heading);">
+					<span class="gradient-text">Selected work</span>
+				</h2>
+				<div style="display: flex; flex-direction: column; gap: 2rem;">
+					<!-- Studienbuch -->
+					<div class="glass glass-hover reveal" style="padding: 2rem 2.5rem; border-radius: 24px;">
+						<div class="project-row" style="display: flex; gap: 2rem;">
+							<div style="flex: 1;">
+								<div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+									<h3 style="font-size: 1.5rem; font-weight: 700; font-family: var(--font-heading);">Studienbuch</h3>
+									<span class="pill" style="font-size: 0.7rem;">studienbuch.app</span>
+								</div>
+								<p style="font-size: 0.75rem; margin-bottom: 1rem; color: var(--purple); font-family: var(--font-mono);">Active since August 2023</p>
+								<p style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-primary); font-style: italic;">"The student app with a local-first soul."</p>
+								<p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+									Manages grades, absences, homework, and substitution schedules. Built with local-first architecture for offline-capable, instant interactions. In daily use by students.
+								</p>
+								<div class="wrap">
+									<span class="pill">React Native</span>
+									<span class="pill">TypeScript</span>
+									<span class="pill">SQL</span>
+									<span class="pill">Docker</span>
+									<span class="pill pill-star">Local-First</span>
+								</div>
+							</div>
+							<div class="project-preview" style="width: 320px; flex-shrink: 0;">
+								<div class="preview-placeholder" style="width: 100%; height: 100%; min-height: 180px;">
+									<span>Preview</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Corona OHZ -->
+					<div class="glass glass-hover reveal" style="padding: 2rem 2.5rem; border-radius: 24px;">
+						<div class="project-row" style="display: flex; gap: 2rem;">
+							<div style="flex: 1;">
+								<h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; font-family: var(--font-heading);">Corona OHZ</h3>
+								<p style="font-size: 0.75rem; margin-bottom: 1rem; color: var(--cyan); font-family: var(--font-mono);">2021 – 2022</p>
+								<p style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-primary); font-style: italic;">"Regional COVID data when it mattered most."</p>
+								<p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+									A data dashboard for Landkreis Osterholz providing local COVID-19 statistics and trends during the pandemic.
+								</p>
+								<div class="wrap">
+									<span class="pill">Next.js</span>
+									<span class="pill">Python</span>
+								</div>
+							</div>
+							<div class="project-preview" style="width: 320px; flex-shrink: 0;">
+								<div class="preview-placeholder" style="width: 100%; height: 100%; min-height: 180px;">
+									<span>Preview</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Karaoke App -->
+					<div class="glass glass-hover reveal" style="padding: 2rem 2.5rem; border-radius: 24px;">
+						<div class="project-row" style="display: flex; gap: 2rem;">
+							<div style="flex: 1;">
+								<h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; font-family: var(--font-heading);">Karaoke App</h3>
+								<p style="font-size: 0.75rem; margin-bottom: 1rem; color: var(--rose); font-family: var(--font-mono);">2021 – 2022</p>
+								<p style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-primary); font-style: italic;">"AI-powered sing-along for any song."</p>
+								<p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+									Vocal and instrumental separation powered by Deezer's algorithm, enabling real-time karaoke from any audio track.
+								</p>
+								<div class="wrap">
+									<span class="pill">Audio Processing</span>
+									<span class="pill">Deezer Spleeter</span>
+								</div>
+							</div>
+							<div class="project-preview" style="width: 320px; flex-shrink: 0;">
+								<div class="preview-placeholder" style="width: 100%; height: 100%; min-height: 180px;">
+									<span>Preview</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Freelance -->
+					<div class="glass glass-hover reveal" style="padding: 2rem 2.5rem; border-radius: 24px;">
+						<h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; font-family: var(--font-heading);">Freelance Work</h3>
+						<p style="font-size: 0.75rem; margin-bottom: 1rem; color: var(--emerald); font-family: var(--font-mono);">2022 – 2023</p>
+						<p style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-primary); font-style: italic;">"Handcrafted websites for artists and small businesses."</p>
+						<p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+							SEO optimization, custom design, and performance-focused web development for independent clients.
+						</p>
+						<div class="wrap">
+							<span class="pill">SEO</span>
+							<span class="pill">Custom Design</span>
+							<span class="pill">Web Development</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Career -->
+		<section id="career" class="section-gap relative z-10">
+			<div class="container reveal">
+				<p style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; color: var(--purple); font-family: var(--font-mono);">05 — Career</p>
+				<h2 style="font-size: clamp(1.875rem, 4vw, 2.25rem); font-weight: 700; margin-bottom: 3rem; font-family: var(--font-heading);">
+					<span class="gradient-text">The journey</span>
+				</h2>
+				<div style="position: relative; max-width: 48rem; padding-left: 3rem;">
+					<div class="timeline-line"></div>
+
+					<div style="position: relative; margin-bottom: 3rem;" class="reveal">
+						<div class="timeline-dot"></div>
+						<div class="glass glass-hover" style="padding: 1.5rem 2rem; border-radius: 20px;">
+							<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+								<h3 style="font-size: 1.25rem; font-weight: 700; font-family: var(--font-heading);">Buildlinx GmbH</h3>
+								<span class="pill" style="font-size: 0.7rem;">Current</span>
+							</div>
+							<p style="font-size: 0.75rem; margin-bottom: 0.75rem; color: var(--purple); font-family: var(--font-mono);">Oct 2024 — Present</p>
+							<p style="margin-bottom: 0.5rem; color: var(--text-primary); font-weight: 500;">Frontend Lead / Architecture</p>
+							<p style="color: var(--text-secondary);">Building management IoT platform. Go + TypeScript stack. Offered "Software Developer mit Architekturverantwortung" — 64k.</p>
+						</div>
+					</div>
+
+					<div style="position: relative; margin-bottom: 3rem;" class="reveal">
+						<div class="timeline-dot"></div>
+						<div class="glass glass-hover" style="padding: 1.5rem 2rem; border-radius: 20px;">
+							<h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem; font-family: var(--font-heading);">Check24</h3>
+							<p style="font-size: 0.75rem; margin-bottom: 0.75rem; color: var(--cyan); font-family: var(--font-mono);">Aug 2023 — Oct 2024</p>
+							<p style="margin-bottom: 0.5rem; color: var(--text-primary); font-weight: 500;">Professional Developer</p>
+							<p style="color: var(--text-secondary);">React + PHP/Symfony at Germany's largest comparison portal. Earned their highest performance rating. ~63k offer.</p>
+						</div>
+					</div>
+
+					<div style="position: relative; margin-bottom: 3rem;" class="reveal">
+						<div class="timeline-dot"></div>
+						<div class="glass glass-hover" style="padding: 1.5rem 2rem; border-radius: 20px;">
+							<h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem; font-family: var(--font-heading);">Freelance</h3>
+							<p style="font-size: 0.75rem; margin-bottom: 0.75rem; color: var(--emerald); font-family: var(--font-mono);">Aug 2022 — Dec 2023</p>
+							<p style="margin-bottom: 0.5rem; color: var(--text-primary); font-weight: 500;">Web Development & SEO</p>
+							<p style="color: var(--text-secondary);">Custom websites and SEO optimization for artists and small businesses.</p>
+						</div>
+					</div>
+
+					<div style="position: relative;" class="reveal">
+						<div class="timeline-dot"></div>
+						<div class="glass glass-hover" style="padding: 1.5rem 2rem; border-radius: 20px;">
+							<h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem; font-family: var(--font-heading);">homevoice GmbH</h3>
+							<p style="font-size: 0.75rem; margin-bottom: 0.75rem; color: var(--rose); font-family: var(--font-mono);">Aug 2021 — Jul 2022</p>
+							<p style="margin-bottom: 0.5rem; color: var(--text-primary); font-weight: 500;">Full-Stack Developer</p>
+							<p style="color: var(--text-secondary);">Property management platform built with Spring Boot (Java) + React.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Blog -->
+		<section class="section-gap relative z-10">
+			<div class="container reveal">
+				<p style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; color: var(--cyan); font-family: var(--font-mono);">06 — Writing</p>
+				<h2 style="font-size: clamp(1.875rem, 4vw, 2.25rem); font-weight: 700; margin-bottom: 3rem; font-family: var(--font-heading);">
+					<span class="gradient-text">From the blog</span>
+				</h2>
+				<div class="grid-3">
+					<div class="glass glass-hover reveal" style="padding: 1.5rem 2rem; border-radius: 20px;">
+						<span class="date-tag">January 2026</span>
+						<h3 style="font-size: 1.1rem; font-weight: 700; margin-top: 0.75rem; margin-bottom: 0.75rem; font-family: var(--font-heading);">Why I Chose Effect TS for Error Handling</h3>
+						<p style="font-size: 0.9rem; color: var(--text-secondary);">Exploring composable, type-safe error pipelines that make impossible states unrepresentable.</p>
+					</div>
+					<div class="glass glass-hover reveal" style="padding: 1.5rem 2rem; border-radius: 20px;">
+						<span class="date-tag">December 2025</span>
+						<h3 style="font-size: 1.1rem; font-weight: 700; margin-top: 0.75rem; margin-bottom: 0.75rem; font-family: var(--font-heading);">The Case for End-to-End TypeScript</h3>
+						<p style="font-size: 0.9rem; color: var(--text-secondary);">From Drizzle schemas to React components — one language, one type system, zero gaps.</p>
+					</div>
+					<div class="glass glass-hover reveal" style="padding: 1.5rem 2rem; border-radius: 20px;">
+						<span class="date-tag">November 2025</span>
+						<h3 style="font-size: 1.1rem; font-weight: 700; margin-top: 0.75rem; margin-bottom: 0.75rem; font-family: var(--font-heading);">AI-Assisted Development: My Daily Workflow</h3>
+						<p style="font-size: 0.9rem; color: var(--text-secondary);">How Cursor, Claude, and Codex changed everything about the way I write software.</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Photos -->
+		<section class="section-gap relative z-10">
+			<div class="container reveal">
+				<p style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; color: var(--rose); font-family: var(--font-mono);">07 — Life</p>
+				<h2 style="font-size: clamp(1.875rem, 4vw, 2.25rem); font-weight: 700; margin-bottom: 3rem; font-family: var(--font-heading);">
+					<span class="gradient-text">Beyond the code</span>
+				</h2>
+				<div class="photos-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+					<div class="span-2" style="grid-row: span 2;">
+						<div class="photo-frame glass" style="width: 100%; height: 100%; min-height: 300px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.015);">
+							<div style="text-align: center;">
+								<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="color: var(--text-secondary); margin: 0 auto 12px;">
+									<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+								</svg>
+								<p style="font-size: 0.9rem; color: var(--text-secondary); font-family: var(--font-mono);">Portrait</p>
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class="photo-frame glass" style="width: 100%; height: 12rem; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.015);">
+							<div style="text-align: center;">
+								<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="color: var(--text-secondary); margin: 0 auto 8px;">
+									<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+								</svg>
+								<p style="font-size: 0.75rem; color: var(--text-secondary); font-family: var(--font-mono);">Life outside the IDE</p>
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class="photo-frame glass" style="width: 100%; height: 12rem; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.015);">
+							<div style="text-align: center;">
+								<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="color: var(--text-secondary); margin: 0 auto 8px;">
+									<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+								</svg>
+								<p style="font-size: 0.75rem; color: var(--text-secondary); font-family: var(--font-mono);">Workspace</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Contact -->
+		<section id="contact" class="section-gap relative z-10" style="padding-bottom: 60px;">
+			<div class="container reveal">
+				<p style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; color: var(--emerald); font-family: var(--font-mono);">08 — Contact</p>
+				<h2 style="font-size: clamp(1.875rem, 4vw, 2.25rem); font-weight: 700; margin-bottom: 3rem; font-family: var(--font-heading);">
+					<span class="gradient-text">Let's connect</span>
+				</h2>
+				<div class="glass" style="padding: 2rem 3rem; max-width: 42rem; border-radius: 24px; position: relative; overflow: hidden;">
+					<div style="position: absolute; inset: 0; border-radius: 24px; padding: 1px; background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(6,182,212,0.2)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;"></div>
+					<div style="display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 2.5rem;">
+						<div style="display: flex; align-items: center; gap: 1rem;">
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--text-secondary); flex-shrink: 0;">
+								<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+							</svg>
+							<a href="https://github.com/HaukeSchnau" target="_blank" rel="noopener" class="contact-link">github.com/HaukeSchnau</a>
+						</div>
+						<div style="display: flex; align-items: center; gap: 1rem;">
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--text-secondary); flex-shrink: 0;">
+								<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+							</svg>
+							<a href="https://linkedin.com/in/haukeschnau" target="_blank" rel="noopener" class="contact-link">linkedin.com/in/haukeschnau</a>
+						</div>
+						<div style="display: flex; align-items: center; gap: 1rem;">
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--text-secondary); flex-shrink: 0;">
+								<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+							</svg>
+							<a href="mailto:hauke.schnau@studium.uni-hamburg.de" class="contact-link">hauke.schnau@studium.uni-hamburg.de</a>
+						</div>
+						<div style="display: flex; align-items: center; gap: 1rem;">
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--text-secondary); flex-shrink: 0;">
+								<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+							</svg>
+							<a href="https://haukeschnau.de" target="_blank" rel="noopener" class="contact-link">haukeschnau.de</a>
+						</div>
+					</div>
+					<a href="mailto:hauke.schnau@studium.uni-hamburg.de" class="btn-gradient">
+						Get in Touch
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+						</svg>
+					</a>
+				</div>
+			</div>
+		</section>
+
+		<!-- Footer -->
+		<footer style="position: relative; z-index: 10; padding: 3rem 0; border-top: 1px solid rgba(255,255,255,0.04);">
+			<div class="container" style="text-align: center;">
+				<p style="font-size: 0.9rem; color: var(--text-secondary);">
+					Built with Astro & Tailwind CSS. Designed with obsessive attention to type safety.
+				</p>
+			</div>
+		</footer>
+
+		<!-- Scroll animation script -->
+		<script>
+			const observer = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((entry) => {
+						if (entry.isIntersecting) {
+							entry.target.classList.add('visible');
+						}
+					});
+				},
+				{ threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+			);
+			document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+		</script>
+	</body>
+</html>

@@ -1,0 +1,647 @@
+---
+import "../styles/global.css";
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<title>HAUKE SCHNAU — Software Developer</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Fira+Code:wght@400;500;600&family=Karla:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+		<style>
+			:root {
+				--bg: #FFFDF7;
+				--text: #1a1a1a;
+				--border: #1a1a1a;
+				--yellow: #FFD60A;
+				--red: #FF5252;
+				--green: #4ADE80;
+				--blue: #60A5FA;
+				--shadow: 8px 8px 0px #1a1a1a;
+				--shadow-sm: 4px 4px 0px #1a1a1a;
+				--shadow-hover: 12px 12px 0px #1a1a1a;
+				--border-w: 3px;
+				--radius: 4px;
+			}
+
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			html {
+				scroll-behavior: smooth;
+			}
+
+			body {
+				font-family: 'Karla', sans-serif;
+				background: var(--bg);
+				color: var(--text);
+				background-image: radial-gradient(circle, #e0ddd6 1px, transparent 1px);
+				background-size: 24px 24px;
+				overflow-x: hidden;
+			}
+
+			h1, h2, h3, h4 {
+				font-family: 'Archivo Black', sans-serif;
+				text-transform: uppercase;
+				letter-spacing: -0.02em;
+			}
+
+			code, .mono {
+				font-family: 'Fira Code', monospace;
+			}
+
+			.container {
+				max-width: 1400px;
+				margin: 0 auto;
+				padding: 0 24px;
+			}
+
+			.card {
+				border: var(--border-w) solid var(--border);
+				box-shadow: var(--shadow);
+				border-radius: var(--radius);
+				padding: 32px;
+				transition: transform 150ms ease, box-shadow 150ms ease;
+			}
+
+			.card:hover {
+				transform: translate(-2px, -2px);
+				box-shadow: var(--shadow-hover);
+			}
+
+			.sticker {
+				display: inline-block;
+				border: var(--border-w) solid var(--border);
+				border-radius: 999px;
+				padding: 6px 16px;
+				font-family: 'Karla', sans-serif;
+				font-weight: 700;
+				font-size: 0.85rem;
+				box-shadow: var(--shadow-sm);
+				transition: transform 150ms ease, box-shadow 150ms ease;
+			}
+
+			.sticker:hover {
+				transform: translate(-1px, -1px);
+				box-shadow: 6px 6px 0px #1a1a1a;
+			}
+
+			.btn {
+				display: inline-block;
+				border: var(--border-w) solid var(--border);
+				border-radius: var(--radius);
+				padding: 14px 28px;
+				font-family: 'Archivo Black', sans-serif;
+				font-size: 1rem;
+				text-transform: uppercase;
+				text-decoration: none;
+				color: var(--text);
+				background: var(--yellow);
+				box-shadow: var(--shadow);
+				cursor: pointer;
+				transition: transform 150ms ease, box-shadow 150ms ease;
+			}
+
+			.btn:hover {
+				transform: translate(-3px, -3px);
+				box-shadow: var(--shadow-hover);
+			}
+
+			.btn:active {
+				transform: translate(4px, 4px);
+				box-shadow: none;
+			}
+
+			/* Marquee */
+			.marquee-track {
+				display: flex;
+				width: max-content;
+				animation: marquee 25s linear infinite;
+			}
+
+			@keyframes marquee {
+				0% { transform: translateX(0); }
+				100% { transform: translateX(-50%); }
+			}
+
+			.marquee-track:hover {
+				animation-play-state: paused;
+			}
+
+			/* Reveal animation */
+			.reveal {
+				opacity: 0;
+				transform: translateY(30px);
+				transition: opacity 0.6s ease, transform 0.6s ease;
+			}
+
+			.reveal.visible {
+				opacity: 1;
+				transform: translateY(0);
+			}
+
+			/* Timeline */
+			.timeline {
+				position: relative;
+				padding-left: 40px;
+			}
+
+			.timeline::before {
+				content: '';
+				position: absolute;
+				left: 14px;
+				top: 0;
+				bottom: 0;
+				width: 4px;
+				background: var(--text);
+				border-radius: 2px;
+			}
+
+			.timeline-item {
+				position: relative;
+				margin-bottom: 40px;
+			}
+
+			.timeline-item::before {
+				content: '';
+				position: absolute;
+				left: -34px;
+				top: 18px;
+				width: 20px;
+				height: 20px;
+				background: var(--yellow);
+				border: 3px solid var(--text);
+				border-radius: 50%;
+				z-index: 1;
+			}
+
+			.timeline-item:nth-child(2)::before { background: var(--blue); }
+			.timeline-item:nth-child(3)::before { background: var(--green); }
+			.timeline-item:nth-child(4)::before { background: var(--red); }
+
+			/* Placeholder images */
+			.img-placeholder {
+				border: var(--border-w) dashed var(--border);
+				background: #f0ede6;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: #999;
+				font-family: 'Fira Code', monospace;
+				font-size: 0.85rem;
+			}
+
+			/* Responsive */
+			@media (max-width: 768px) {
+				.hero-name {
+					font-size: clamp(3rem, 12vw, 5rem) !important;
+				}
+				.grid-2 { grid-template-columns: 1fr !important; }
+				.grid-3 { grid-template-columns: 1fr !important; }
+				.grid-values { grid-template-columns: 1fr !important; }
+				.card { padding: 20px; }
+				.container { padding: 0 16px; }
+			}
+
+			@media (max-width: 480px) {
+				.hero-name {
+					font-size: clamp(2.2rem, 14vw, 3.5rem) !important;
+				}
+			}
+		</style>
+	</head>
+	<body>
+
+		<!-- Back Link -->
+		<nav class="container" style="padding-top: 20px;">
+			<a href="/" class="sticker" style="background: var(--yellow); text-decoration: none; color: var(--text); transform: rotate(-2deg); display: inline-block;">
+				← Back to Designs
+			</a>
+		</nav>
+
+		<!-- HERO -->
+		<header class="container" style="padding-top: 60px; padding-bottom: 20px; position: relative;">
+			<div class="reveal">
+				<div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px; margin-bottom: 20px;">
+					<span class="sticker" style="background: var(--green); transform: rotate(-3deg);">Software Developer</span>
+					<span class="sticker" style="background: var(--blue); transform: rotate(2deg);">Currently seeking: The perfect role →</span>
+				</div>
+
+				<h1 class="hero-name" style="font-size: clamp(4rem, 10vw, 9rem); line-height: 0.92; margin-bottom: 24px; letter-spacing: -0.03em;">
+					HAUKE<br/>SCHNAU
+				</h1>
+
+				<p style="font-size: 1.35rem; font-weight: 600; max-width: 600px; margin-bottom: 28px; line-height: 1.4;">
+					I ship type-safe code with AI&nbsp;superpowers.
+				</p>
+
+				<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+					<span class="sticker" style="background: var(--red); color: #fff; transform: rotate(1.5deg);">
+						📍 Hamburg / Bremen, Germany
+					</span>
+					<span class="sticker" style="background: var(--yellow); transform: rotate(-1deg);">
+						🎓 B.Sc. Computer Science, Uni Hamburg — GPA 1.47
+					</span>
+				</div>
+			</div>
+		</header>
+
+		<!-- MARQUEE -->
+		<div class="reveal" style="margin-top: 48px; border-top: var(--border-w) solid var(--border); border-bottom: var(--border-w) solid var(--border); background: var(--yellow); padding: 14px 0; overflow: hidden;">
+			<div class="marquee-track" style="font-family: 'Archivo Black', sans-serif; font-size: 1.15rem; text-transform: uppercase; white-space: nowrap;">
+				<span>TypeScript &nbsp;·&nbsp; React &nbsp;·&nbsp; Effect TS &nbsp;·&nbsp; tRPC &nbsp;·&nbsp; Zod &nbsp;·&nbsp; Tailwind &nbsp;·&nbsp; AI-Native &nbsp;·&nbsp; Ship Fast &nbsp;·&nbsp; Type Safe &nbsp;·&nbsp; DX First &nbsp;·&nbsp;&nbsp;&nbsp;</span>
+				<span>TypeScript &nbsp;·&nbsp; React &nbsp;·&nbsp; Effect TS &nbsp;·&nbsp; tRPC &nbsp;·&nbsp; Zod &nbsp;·&nbsp; Tailwind &nbsp;·&nbsp; AI-Native &nbsp;·&nbsp; Ship Fast &nbsp;·&nbsp; Type Safe &nbsp;·&nbsp; DX First &nbsp;·&nbsp;&nbsp;&nbsp;</span>
+			</div>
+		</div>
+
+		<!-- ABOUT -->
+		<section class="container" style="padding-top: 80px; padding-bottom: 40px;">
+			<div class="reveal card" style="background: var(--yellow); max-width: 960px; transform: rotate(-0.5deg);">
+				<h2 style="font-size: 2rem; margin-bottom: 20px;">The Pitch</h2>
+				<div style="font-size: 1.1rem; line-height: 1.7; display: flex; flex-direction: column; gap: 16px;">
+					<p><strong>Three years of production code. Two competing job offers. One obsession: making runtime errors impossible.</strong></p>
+					<p>I started coding commercially at 19, building property management software with Spring Boot. Then Check24 — Germany's biggest comparison portal — where I scored their highest performance rating. Now I lead the frontend at Buildlinx, making architecture decisions for IoT building management.</p>
+					<p>I live in the TypeScript ecosystem. Effect TS, tRPC, Zod, TanStack — the modern stack that most German companies haven't discovered yet. I follow Theo (t3.gg) and the San Francisco developer scene because that's where the future ships first.</p>
+					<p>My AI workflow isn't experimental — it's essential. Cursor, Claude, and Codex are how I ship faster than teams twice my size.</p>
+				</div>
+			</div>
+		</section>
+
+		<!-- TECH STACK -->
+		<section class="container" style="padding-top: 40px; padding-bottom: 40px;">
+			<h2 class="reveal" style="font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 32px; transform: rotate(1deg);">Sticker Collection 🧩</h2>
+
+			<div class="reveal" style="display: flex; flex-direction: column; gap: 28px;">
+				<!-- Languages -->
+				<div>
+					<h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; font-family: 'Fira Code', monospace;">Languages</h3>
+					<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+						<span class="sticker" style="background: var(--yellow); font-size: 0.95rem;">TypeScript ★</span>
+						<span class="sticker" style="background: var(--blue);">Go</span>
+						<span class="sticker" style="background: var(--red); color: #fff;">PHP</span>
+						<span class="sticker" style="background: var(--green);">Python</span>
+						<span class="sticker" style="background: var(--yellow);">Java</span>
+					</div>
+				</div>
+
+				<!-- Frontend -->
+				<div>
+					<h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; font-family: 'Fira Code', monospace;">Frontend</h3>
+					<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+						<span class="sticker" style="background: var(--blue);">React</span>
+						<span class="sticker" style="background: var(--blue);">React Native</span>
+						<span class="sticker" style="background: var(--green);">Next.js</span>
+						<span class="sticker" style="background: var(--yellow);">Expo</span>
+						<span class="sticker" style="background: var(--red); color: #fff;">Tailwind CSS</span>
+						<span class="sticker" style="background: var(--green);">shadcn/ui</span>
+					</div>
+				</div>
+
+				<!-- Backend -->
+				<div>
+					<h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; font-family: 'Fira Code', monospace;">Backend</h3>
+					<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+						<span class="sticker" style="background: var(--green);">Node.js</span>
+						<span class="sticker" style="background: var(--yellow);">Bun</span>
+						<span class="sticker" style="background: var(--blue);">tRPC</span>
+						<span class="sticker" style="background: var(--red); color: #fff;">Drizzle ORM</span>
+						<span class="sticker" style="background: var(--yellow);">Symfony</span>
+					</div>
+				</div>
+
+				<!-- Type Safety -->
+				<div>
+					<h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; font-family: 'Fira Code', monospace;">Type Safety</h3>
+					<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+						<span class="sticker" style="background: var(--yellow);">Zod</span>
+						<span class="sticker" style="background: var(--green);">Effect TS</span>
+						<span class="sticker" style="background: var(--blue);">tRPC</span>
+					</div>
+				</div>
+
+				<!-- Build Tools -->
+				<div>
+					<h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; font-family: 'Fira Code', monospace;">Build Tools</h3>
+					<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+						<span class="sticker" style="background: var(--red); color: #fff;">Vite</span>
+						<span class="sticker" style="background: var(--blue);">Turborepo</span>
+						<span class="sticker" style="background: var(--green);">OXC Toolchain</span>
+					</div>
+				</div>
+
+				<!-- Testing -->
+				<div>
+					<h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; font-family: 'Fira Code', monospace;">Testing</h3>
+					<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+						<span class="sticker" style="background: var(--yellow);">Vitest</span>
+						<span class="sticker" style="background: var(--green);">Playwright</span>
+					</div>
+				</div>
+
+				<!-- Infra -->
+				<div>
+					<h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; font-family: 'Fira Code', monospace;">Infrastructure</h3>
+					<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+						<span class="sticker" style="background: var(--blue);">Docker</span>
+						<span class="sticker" style="background: var(--red); color: #fff;">NixOS / Nix Darwin</span>
+					</div>
+				</div>
+
+				<!-- AI -->
+				<div>
+					<h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; font-family: 'Fira Code', monospace;">AI</h3>
+					<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+						<span class="sticker" style="background: var(--green);">OpenAI Codex</span>
+						<span class="sticker" style="background: var(--yellow);">Cursor</span>
+						<span class="sticker" style="background: var(--blue);">Claude</span>
+					</div>
+				</div>
+
+				<!-- Other -->
+				<div>
+					<h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; font-family: 'Fira Code', monospace;">Other</h3>
+					<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+						<span class="sticker" style="background: var(--red); color: #fff;">Astro</span>
+						<span class="sticker" style="background: var(--yellow);">Jujutsu VCS</span>
+						<span class="sticker" style="background: var(--green);">Git</span>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- CORE VALUES -->
+		<section class="container" style="padding-top: 40px; padding-bottom: 40px;">
+			<h2 class="reveal" style="font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 32px; transform: rotate(-1deg);">What I Believe</h2>
+
+			<div class="reveal grid-values" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+				<div class="card" style="background: var(--yellow); transform: rotate(-1.5deg);">
+					<h3 style="font-size: 1.25rem; margin-bottom: 10px;">Type Safety Isn't Optional</h3>
+					<p style="font-size: 0.95rem; line-height: 1.5;">If it compiles, it works. End-to-end types from database to UI.</p>
+				</div>
+				<div class="card" style="background: var(--green); transform: rotate(1deg);">
+					<h3 style="font-size: 1.25rem; margin-bottom: 10px;">DX Is a Multiplier</h3>
+					<p style="font-size: 0.95rem; line-height: 1.5;">Great developer experience compounds. Every minute saved in tooling pays dividends.</p>
+				</div>
+				<div class="card" style="background: var(--blue); transform: rotate(-0.5deg);">
+					<h3 style="font-size: 1.25rem; margin-bottom: 10px;">AI Is My Co-Pilot</h3>
+					<p style="font-size: 0.95rem; line-height: 1.5;">Cursor + Claude + Codex. Not replacing thinking — amplifying it.</p>
+				</div>
+				<div class="card" style="background: var(--red); color: #fff; transform: rotate(2deg);">
+					<h3 style="font-size: 1.25rem; margin-bottom: 10px;">Ship > Perfect</h3>
+					<p style="font-size: 0.95rem; line-height: 1.5;">Pragmatism over perfection. Get it in front of users.</p>
+				</div>
+				<div class="card" style="background: var(--yellow); transform: rotate(-2deg);">
+					<h3 style="font-size: 1.25rem; margin-bottom: 10px;">Modern by Default</h3>
+					<p style="font-size: 0.95rem; line-height: 1.5;">Life's too short for Webpack configs and manual type definitions.</p>
+				</div>
+				<div class="card" style="background: var(--green); transform: rotate(1.5deg);">
+					<h3 style="font-size: 1.25rem; margin-bottom: 10px;">Local-First Matters</h3>
+					<p style="font-size: 0.95rem; line-height: 1.5;">Respect the user. Offline-capable, instant, no spinners.</p>
+				</div>
+			</div>
+		</section>
+
+		<!-- PROJECTS -->
+		<section class="container" style="padding-top: 40px; padding-bottom: 40px;">
+			<h2 class="reveal" style="font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 32px;">Projects</h2>
+
+			<div style="display: flex; flex-direction: column; gap: 32px;">
+				<!-- Studienbuch -->
+				<div class="reveal card" style="background: #fff; transform: rotate(0.5deg);">
+					<div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; justify-content: space-between;">
+						<div style="flex: 1; min-width: 280px;">
+							<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 12px;">
+								<h3 style="font-size: 1.8rem;">Studienbuch</h3>
+								<span class="sticker" style="background: var(--green); font-size: 0.75rem;">studienbuch.app</span>
+							</div>
+							<p class="mono" style="font-size: 0.8rem; color: #666; margin-bottom: 12px;">Aug 2023 – Present</p>
+							<p style="font-size: 1.2rem; font-weight: 700; margin-bottom: 12px;">The app students actually use daily.</p>
+							<p style="line-height: 1.6; margin-bottom: 16px;">Mobile app for grades, absences, homework, substitution schedules. Built with React Native, TypeScript, Local-First architecture, and Docker.</p>
+							<div style="display: flex; flex-wrap: wrap; gap: 6px;">
+								<span class="sticker" style="background: var(--yellow); font-size: 0.75rem;">React Native</span>
+								<span class="sticker" style="background: var(--blue); font-size: 0.75rem;">TypeScript</span>
+								<span class="sticker" style="background: var(--green); font-size: 0.75rem;">Local-First</span>
+								<span class="sticker" style="background: var(--red); color: #fff; font-size: 0.75rem;">Docker</span>
+							</div>
+						</div>
+						<div class="img-placeholder" style="width: 260px; height: 180px; border-radius: var(--radius); flex-shrink: 0;">
+							screenshot.png
+						</div>
+					</div>
+				</div>
+
+				<!-- Corona OHZ -->
+				<div class="reveal card" style="background: #fff; transform: rotate(-0.8deg);">
+					<div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; justify-content: space-between;">
+						<div style="flex: 1; min-width: 280px;">
+							<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 12px;">
+								<h3 style="font-size: 1.8rem;">Corona OHZ</h3>
+								<span class="sticker" style="background: var(--blue); font-size: 0.75rem;">Public Dashboard</span>
+							</div>
+							<p class="mono" style="font-size: 0.8rem; color: #666; margin-bottom: 12px;">2021 – 2022</p>
+							<p style="font-size: 1.2rem; font-weight: 700; margin-bottom: 12px;">Local COVID data as a public service.</p>
+							<p style="line-height: 1.6; margin-bottom: 16px;">Regional COVID dashboard serving real-time data for the Osterholz county. Built with Next.js and Python backend for data aggregation.</p>
+							<div style="display: flex; flex-wrap: wrap; gap: 6px;">
+								<span class="sticker" style="background: var(--green); font-size: 0.75rem;">Next.js</span>
+								<span class="sticker" style="background: var(--yellow); font-size: 0.75rem;">Python</span>
+							</div>
+						</div>
+						<div class="img-placeholder" style="width: 260px; height: 180px; border-radius: var(--radius); flex-shrink: 0;">
+							screenshot.png
+						</div>
+					</div>
+				</div>
+
+				<!-- Karaoke App -->
+				<div class="reveal card" style="background: #fff; transform: rotate(0.3deg);">
+					<div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; justify-content: space-between;">
+						<div style="flex: 1; min-width: 280px;">
+							<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 12px;">
+								<h3 style="font-size: 1.8rem;">Karaoke App</h3>
+								<span class="sticker" style="background: var(--red); color: #fff; font-size: 0.75rem;">AI-Powered</span>
+							</div>
+							<p class="mono" style="font-size: 0.8rem; color: #666; margin-bottom: 12px;">2021 – 2022</p>
+							<p style="font-size: 1.2rem; font-weight: 700; margin-bottom: 12px;">AI meets the living room.</p>
+							<p style="line-height: 1.6; margin-bottom: 16px;">AI-powered vocal separation for karaoke. Uses the Deezer algorithm for real-time audio splitting.</p>
+							<div style="display: flex; flex-wrap: wrap; gap: 6px;">
+								<span class="sticker" style="background: var(--blue); font-size: 0.75rem;">AI / ML</span>
+								<span class="sticker" style="background: var(--green); font-size: 0.75rem;">Deezer Spleeter</span>
+							</div>
+						</div>
+						<div class="img-placeholder" style="width: 260px; height: 180px; border-radius: var(--radius); flex-shrink: 0;">
+							screenshot.png
+						</div>
+					</div>
+				</div>
+
+				<!-- Freelance -->
+				<div class="reveal card" style="background: #fff; transform: rotate(-0.5deg);">
+					<div style="flex: 1; min-width: 280px;">
+						<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 12px;">
+							<h3 style="font-size: 1.8rem;">Freelance Websites</h3>
+							<span class="sticker" style="background: var(--yellow); font-size: 0.75rem;">Client Work</span>
+						</div>
+						<p class="mono" style="font-size: 0.8rem; color: #666; margin-bottom: 12px;">2022 – 2023</p>
+						<p style="font-size: 1.2rem; font-weight: 700; margin-bottom: 12px;">Handcrafted sites for artists and small businesses.</p>
+						<p style="line-height: 1.6; margin-bottom: 16px;">Web development and SEO for local clients. Custom designs, fast load times, accessible markup.</p>
+						<div style="display: flex; flex-wrap: wrap; gap: 6px;">
+							<span class="sticker" style="background: var(--red); color: #fff; font-size: 0.75rem;">Web Dev</span>
+							<span class="sticker" style="background: var(--green); font-size: 0.75rem;">SEO</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- WORK EXPERIENCE -->
+		<section class="container" style="padding-top: 40px; padding-bottom: 40px;">
+			<h2 class="reveal" style="font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 32px; transform: rotate(0.5deg);">Experience</h2>
+
+			<div class="reveal timeline">
+				<!-- Buildlinx -->
+				<div class="timeline-item">
+					<div class="card" style="background: var(--yellow);">
+						<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px;">
+							<h3 style="font-size: 1.4rem;">Buildlinx GmbH</h3>
+							<span class="mono" style="font-size: 0.8rem; color: #555;">Oct 2024 – Present</span>
+						</div>
+						<p style="font-weight: 700; margin-bottom: 8px;">Frontend Lead & Architecture</p>
+						<p style="line-height: 1.6;">Building management IoT platform. Working with EdgeX, Go + TypeScript stack. Offered 64k with architecture responsibility title. Leading frontend decisions and setting technical direction for the product.</p>
+					</div>
+				</div>
+
+				<!-- Check24 -->
+				<div class="timeline-item">
+					<div class="card" style="background: var(--blue);">
+						<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px;">
+							<h3 style="font-size: 1.4rem;">Check24</h3>
+							<span class="mono" style="font-size: 0.8rem;">Aug 2023 – Oct 2024</span>
+						</div>
+						<p style="font-weight: 700; margin-bottom: 8px;">Professional Developer</p>
+						<p style="line-height: 1.6;">React + PHP/Symfony at Germany's biggest comparison portal. Received the highest performance rating. Offered a permanent Professional position at ~63k.</p>
+					</div>
+				</div>
+
+				<!-- Freelance -->
+				<div class="timeline-item">
+					<div class="card" style="background: var(--green);">
+						<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px;">
+							<h3 style="font-size: 1.4rem;">Freelance</h3>
+							<span class="mono" style="font-size: 0.8rem;">Aug 2022 – Dec 2023</span>
+						</div>
+						<p style="font-weight: 700; margin-bottom: 8px;">Web Developer</p>
+						<p style="line-height: 1.6;">Built websites for artists and small businesses. Handled everything from design to SEO to deployment.</p>
+					</div>
+				</div>
+
+				<!-- homevoice -->
+				<div class="timeline-item">
+					<div class="card" style="background: var(--red); color: #fff;">
+						<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px;">
+							<h3 style="font-size: 1.4rem;">homevoice GmbH</h3>
+							<span class="mono" style="font-size: 0.8rem;">Aug 2021 – Jul 2022</span>
+						</div>
+						<p style="font-weight: 700; margin-bottom: 8px;">Developer</p>
+						<p style="line-height: 1.6;">Spring Boot + React for property management software. First commercial role — started at 19.</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- BLOG -->
+		<section class="container" style="padding-top: 40px; padding-bottom: 40px;">
+			<h2 class="reveal" style="font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 32px; transform: rotate(-0.8deg);">Blog <span class="sticker" style="background: var(--red); color: #fff; font-size: 0.7rem; vertical-align: middle;">Coming Soon</span></h2>
+
+			<div class="reveal grid-3" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+				<div class="card" style="background: #fff; transform: rotate(-1deg);">
+					<p class="mono" style="font-size: 0.75rem; color: #888; margin-bottom: 8px;">Jan 2026</p>
+					<h3 style="font-size: 1.15rem; margin-bottom: 10px;">Why I Chose Effect TS for Error Handling</h3>
+					<p style="font-size: 0.9rem; line-height: 1.5; color: #555; margin-bottom: 16px;">How Effect's typed errors changed the way I think about failure modes in production TypeScript applications.</p>
+					<span class="sticker" style="background: var(--yellow); cursor: pointer;">Read →</span>
+				</div>
+				<div class="card" style="background: #fff; transform: rotate(0.5deg);">
+					<p class="mono" style="font-size: 0.75rem; color: #888; margin-bottom: 8px;">Dec 2025</p>
+					<h3 style="font-size: 1.15rem; margin-bottom: 10px;">The Case for End-to-End TypeScript</h3>
+					<p style="font-size: 0.9rem; line-height: 1.5; color: #555; margin-bottom: 16px;">From database schema to UI component — why a single language across the stack eliminates entire categories of bugs.</p>
+					<span class="sticker" style="background: var(--green); cursor: pointer;">Read →</span>
+				</div>
+				<div class="card" style="background: #fff; transform: rotate(-0.5deg);">
+					<p class="mono" style="font-size: 0.75rem; color: #888; margin-bottom: 8px;">Nov 2025</p>
+					<h3 style="font-size: 1.15rem; margin-bottom: 10px;">AI-Assisted Dev: My Cursor Workflow</h3>
+					<p style="font-size: 0.9rem; line-height: 1.5; color: #555; margin-bottom: 16px;">A deep dive into how I use Cursor, Claude, and Codex together to ship features at double the speed.</p>
+					<span class="sticker" style="background: var(--blue); cursor: pointer;">Read →</span>
+				</div>
+			</div>
+		</section>
+
+		<!-- PHOTOS & PERSONAL -->
+		<section class="container" style="padding-top: 40px; padding-bottom: 40px;">
+			<h2 class="reveal" style="font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 32px; transform: rotate(1deg);">Beyond the Code</h2>
+
+			<div class="reveal grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;">
+				<div style="display: flex; flex-direction: column; gap: 20px;">
+					<div class="img-placeholder" style="height: 340px; border-radius: var(--radius); transform: rotate(-1.5deg); box-shadow: var(--shadow);">
+						portrait.jpg
+					</div>
+					<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+						<div class="img-placeholder" style="height: 160px; border-radius: var(--radius); transform: rotate(2deg); box-shadow: var(--shadow);">
+							dog-1.jpg
+						</div>
+						<div class="img-placeholder" style="height: 160px; border-radius: var(--radius); transform: rotate(-1deg); box-shadow: var(--shadow);">
+							dog-2.jpg
+						</div>
+					</div>
+				</div>
+				<div style="display: flex; flex-direction: column; gap: 20px;">
+					<div class="img-placeholder" style="height: 220px; border-radius: var(--radius); transform: rotate(1deg); box-shadow: var(--shadow);">
+						workspace.jpg
+					</div>
+					<div class="card" style="background: var(--green); transform: rotate(-0.5deg);">
+						<p style="font-size: 1.15rem; line-height: 1.7;">When I'm not shipping code, I'm hanging out with my dog near Bremen or nerding out about the latest in the TypeScript ecosystem.</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- CONTACT -->
+		<section class="container" style="padding-top: 40px; padding-bottom: 80px;">
+			<div class="reveal card" style="background: var(--yellow); text-align: center; padding: 60px 40px; transform: rotate(0.5deg);">
+				<h2 style="font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 24px;">Let's Build Something Great</h2>
+				<p style="font-size: 1.15rem; max-width: 520px; margin: 0 auto 32px; line-height: 1.6;">I'm looking for my next challenge. If you're building something ambitious with TypeScript, let's talk.</p>
+
+				<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 36px;">
+					<a href="https://github.com/HaukeSchnau" target="_blank" rel="noopener" class="sticker" style="background: #fff; text-decoration: none; color: var(--text);">GitHub ↗</a>
+					<a href="https://linkedin.com/in/haukeschnau" target="_blank" rel="noopener" class="sticker" style="background: #fff; text-decoration: none; color: var(--text);">LinkedIn ↗</a>
+					<a href="mailto:hauke.schnau@studium.uni-hamburg.de" class="sticker" style="background: #fff; text-decoration: none; color: var(--text);">hauke.schnau@studium.uni-hamburg.de</a>
+				</div>
+
+				<a href="mailto:hauke.schnau@studium.uni-hamburg.de" class="btn" style="font-size: 1.2rem; padding: 18px 40px;">
+					Say Hello →
+				</a>
+			</div>
+		</section>
+
+		<!-- Footer -->
+		<footer style="border-top: var(--border-w) solid var(--border); padding: 20px 0; text-align: center;">
+			<p class="mono" style="font-size: 0.8rem; color: #888;">Built with Astro, Tailwind, and too much coffee. © 2026 Hauke Schnau</p>
+		</footer>
+
+		<script>
+			const reveals = document.querySelectorAll('.reveal');
+			const observer = new IntersectionObserver((entries) => {
+				entries.forEach(entry => {
+					if (entry.isIntersecting) {
+						entry.target.classList.add('visible');
+					}
+				});
+			}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+			reveals.forEach(el => observer.observe(el));
+		</script>
+	</body>
+</html>

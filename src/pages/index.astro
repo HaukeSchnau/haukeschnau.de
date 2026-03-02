@@ -6,14 +6,153 @@ import "../styles/global.css";
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>Hauke Schnau — Design Explorations</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet" />
+		<style>
+			@keyframes grain {
+				0%, 100% { transform: translate(0, 0); }
+				10% { transform: translate(-5%, -10%); }
+				20% { transform: translate(-15%, 5%); }
+				30% { transform: translate(7%, -25%); }
+				40% { transform: translate(-5%, 25%); }
+				50% { transform: translate(-15%, 10%); }
+				60% { transform: translate(15%, 0%); }
+				70% { transform: translate(0%, 15%); }
+				80% { transform: translate(3%, 35%); }
+				90% { transform: translate(-10%, 10%); }
+			}
+			@keyframes fadeUp {
+				from { opacity: 0; transform: translateY(30px); }
+				to { opacity: 1; transform: translateY(0); }
+			}
+			@keyframes scaleIn {
+				from { opacity: 0; transform: scale(0.9); }
+				to { opacity: 1; transform: scale(1); }
+			}
+			body::before {
+				content: "";
+				position: fixed;
+				inset: -50%;
+				width: 200%;
+				height: 200%;
+				background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E");
+				opacity: 0.03;
+				pointer-events: none;
+				z-index: 100;
+				animation: grain 8s steps(10) infinite;
+			}
+		</style>
 	</head>
-	<body>
-		<h1 class="text-3xl font-bold underline">
-		  Hello world!
-		</h1>
+	<body class="min-h-screen bg-[#0a0a0a] text-[#e8e4df] relative overflow-x-hidden" style="font-family: 'DM Sans', sans-serif;">
+		<div class="absolute inset-0 overflow-hidden pointer-events-none">
+			<div class="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-[#1a1a2e] blur-[120px] opacity-60"></div>
+			<div class="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-[#16213e] blur-[120px] opacity-40"></div>
+		</div>
+
+		<main class="relative z-10 max-w-5xl mx-auto px-6 py-16 md:py-24">
+			<header class="mb-20" style="animation: fadeUp 0.8s ease-out both;">
+				<p class="text-[#6b6b6b] text-sm tracking-[0.2em] uppercase mb-4">Design Explorations</p>
+				<h1 class="text-5xl md:text-7xl font-light leading-[1.1] mb-6" style="font-family: 'Instrument Serif', serif;">
+					Hauke Schnau
+				</h1>
+				<p class="text-[#8a8a8a] text-lg max-w-lg leading-relaxed">
+					Five unique design directions for a personal website. Each explores a different aesthetic while showcasing the same story.
+				</p>
+			</header>
+
+			<div class="grid gap-6">
+				<a href="/1" class="group block" style="animation: fadeUp 0.8s ease-out 0.1s both;">
+					<div class="relative border border-[#1a1a1a] rounded-2xl p-8 md:p-10 transition-all duration-500 hover:border-[#2a2a2a] hover:bg-[#0f0f0f] overflow-hidden">
+						<div class="absolute top-0 right-0 w-32 h-32 bg-[#00ff41] opacity-[0.03] blur-[60px] group-hover:opacity-[0.08] transition-opacity duration-700"></div>
+						<div class="flex items-start justify-between gap-6">
+							<div>
+								<div class="flex items-center gap-3 mb-3">
+									<span class="text-[#00ff41] font-mono text-xs tracking-wider">01</span>
+									<span class="w-8 h-px bg-[#2a2a2a]"></span>
+								</div>
+								<h2 class="text-2xl md:text-3xl font-light mb-2" style="font-family: 'Instrument Serif', serif;">The Terminal</h2>
+								<p class="text-[#6b6b6b] text-sm max-w-md">Dark hacker aesthetic. CLI metaphor, monospace typography, CRT scanlines. Code is the medium.</p>
+							</div>
+							<span class="text-[#2a2a2a] group-hover:text-[#4a4a4a] transition-colors text-2xl mt-2">→</span>
+						</div>
+					</div>
+				</a>
+
+				<a href="/2" class="group block" style="animation: fadeUp 0.8s ease-out 0.2s both;">
+					<div class="relative border border-[#1a1a1a] rounded-2xl p-8 md:p-10 transition-all duration-500 hover:border-[#2a2a2a] hover:bg-[#0f0f0f] overflow-hidden">
+						<div class="absolute top-0 right-0 w-32 h-32 bg-[#c9a96e] opacity-[0.03] blur-[60px] group-hover:opacity-[0.08] transition-opacity duration-700"></div>
+						<div class="flex items-start justify-between gap-6">
+							<div>
+								<div class="flex items-center gap-3 mb-3">
+									<span class="text-[#c9a96e] font-mono text-xs tracking-wider">02</span>
+									<span class="w-8 h-px bg-[#2a2a2a]"></span>
+								</div>
+								<h2 class="text-2xl md:text-3xl font-light mb-2" style="font-family: 'Instrument Serif', serif;">The Editorial</h2>
+								<p class="text-[#6b6b6b] text-sm max-w-md">Magazine-inspired print design. Serif typography, cream paper tones, sophisticated grid layout.</p>
+							</div>
+							<span class="text-[#2a2a2a] group-hover:text-[#4a4a4a] transition-colors text-2xl mt-2">→</span>
+						</div>
+					</div>
+				</a>
+
+				<a href="/3" class="group block" style="animation: fadeUp 0.8s ease-out 0.3s both;">
+					<div class="relative border border-[#1a1a1a] rounded-2xl p-8 md:p-10 transition-all duration-500 hover:border-[#2a2a2a] hover:bg-[#0f0f0f] overflow-hidden">
+						<div class="absolute top-0 right-0 w-32 h-32 bg-[#ff5252] opacity-[0.03] blur-[60px] group-hover:opacity-[0.08] transition-opacity duration-700"></div>
+						<div class="flex items-start justify-between gap-6">
+							<div>
+								<div class="flex items-center gap-3 mb-3">
+									<span class="text-[#ff5252] font-mono text-xs tracking-wider">03</span>
+									<span class="w-8 h-px bg-[#2a2a2a]"></span>
+								</div>
+								<h2 class="text-2xl md:text-3xl font-light mb-2" style="font-family: 'Instrument Serif', serif;">The Neobrutalist</h2>
+								<p class="text-[#6b6b6b] text-sm max-w-md">Bold, playful, unapologetic. Thick borders, vivid colors, chunky type, sticker-like energy.</p>
+							</div>
+							<span class="text-[#2a2a2a] group-hover:text-[#4a4a4a] transition-colors text-2xl mt-2">→</span>
+						</div>
+					</div>
+				</a>
+
+				<a href="/4" class="group block" style="animation: fadeUp 0.8s ease-out 0.4s both;">
+					<div class="relative border border-[#1a1a1a] rounded-2xl p-8 md:p-10 transition-all duration-500 hover:border-[#2a2a2a] hover:bg-[#0f0f0f] overflow-hidden">
+						<div class="absolute top-0 right-0 w-32 h-32 bg-[#4fc3f7] opacity-[0.03] blur-[60px] group-hover:opacity-[0.08] transition-opacity duration-700"></div>
+						<div class="flex items-start justify-between gap-6">
+							<div>
+								<div class="flex items-center gap-3 mb-3">
+									<span class="text-[#4fc3f7] font-mono text-xs tracking-wider">04</span>
+									<span class="w-8 h-px bg-[#2a2a2a]"></span>
+								</div>
+								<h2 class="text-2xl md:text-3xl font-light mb-2" style="font-family: 'Instrument Serif', serif;">The Blueprint</h2>
+								<p class="text-[#6b6b6b] text-sm max-w-md">Technical drawing aesthetic. Blueprint grid, schematic annotations, architectural precision.</p>
+							</div>
+							<span class="text-[#2a2a2a] group-hover:text-[#4a4a4a] transition-colors text-2xl mt-2">→</span>
+						</div>
+					</div>
+				</a>
+
+				<a href="/5" class="group block" style="animation: fadeUp 0.8s ease-out 0.5s both;">
+					<div class="relative border border-[#1a1a1a] rounded-2xl p-8 md:p-10 transition-all duration-500 hover:border-[#2a2a2a] hover:bg-[#0f0f0f] overflow-hidden">
+						<div class="absolute top-0 right-0 w-32 h-32 bg-[#a855f7] opacity-[0.03] blur-[60px] group-hover:opacity-[0.08] transition-opacity duration-700"></div>
+						<div class="flex items-start justify-between gap-6">
+							<div>
+								<div class="flex items-center gap-3 mb-3">
+									<span class="text-[#a855f7] font-mono text-xs tracking-wider">05</span>
+									<span class="w-8 h-px bg-[#2a2a2a]"></span>
+								</div>
+								<h2 class="text-2xl md:text-3xl font-light mb-2" style="font-family: 'Instrument Serif', serif;">The Cosmos</h2>
+								<p class="text-[#6b6b6b] text-sm max-w-md">Deep space aesthetic. Floating gradient orbs, glass surfaces, ambient depth, cosmic dark theme.</p>
+							</div>
+							<span class="text-[#2a2a2a] group-hover:text-[#4a4a4a] transition-colors text-2xl mt-2">→</span>
+						</div>
+					</div>
+				</a>
+			</div>
+
+			<footer class="mt-20 text-center text-[#3a3a3a] text-xs tracking-wider">
+				<p>HAUKE SCHNAU · 2026</p>
+			</footer>
+		</main>
 	</body>
 </html>

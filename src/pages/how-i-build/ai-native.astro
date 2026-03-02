@@ -1,0 +1,342 @@
+---
+import "../../styles/global.css";
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<title>AI-Native Development — How I Build — Hauke Schnau</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet" />
+		<style>
+			:root {
+				--bg: #FAF7F2;
+				--text: #1a1a1a;
+				--text-secondary: #6b6155;
+				--accent: #c1440e;
+				--divider: #ddd5c9;
+				--pullquote-bg: #f0ebe3;
+				--font-display: 'Playfair Display', Georgia, serif;
+				--font-body: 'Source Serif 4', Georgia, serif;
+				--font-label: 'Outfit', system-ui, sans-serif;
+			}
+
+			* { margin: 0; padding: 0; box-sizing: border-box; }
+			html { scroll-behavior: smooth; }
+
+			body {
+				background: var(--bg);
+				color: var(--text);
+				font-family: var(--font-body);
+				font-size: 18px;
+				line-height: 1.7;
+				-webkit-font-smoothing: antialiased;
+				overflow-x: hidden;
+			}
+
+			body::before {
+				content: '';
+				position: fixed;
+				inset: 0;
+				z-index: 9999;
+				pointer-events: none;
+				opacity: 0.025;
+				background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+				background-repeat: repeat;
+				background-size: 256px 256px;
+			}
+
+			.fade-in {
+				opacity: 0;
+				transform: translateY(24px);
+				transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+			}
+			.fade-in.visible { opacity: 1; transform: translateY(0); }
+			.delay-1 { transition-delay: 0.1s; }
+			.delay-2 { transition-delay: 0.2s; }
+			.delay-3 { transition-delay: 0.3s; }
+
+			a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
+			a:hover { color: #a03a0c; }
+
+			.label {
+				font-family: var(--font-label);
+				font-size: 11px;
+				font-weight: 500;
+				letter-spacing: 0.15em;
+				text-transform: uppercase;
+				color: var(--text-secondary);
+			}
+
+			.container {
+				max-width: 720px;
+				margin: 0 auto;
+				padding: 0 24px;
+			}
+
+			.wide-container {
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 0 24px;
+			}
+
+			.editorial-hr {
+				border: none;
+				height: 1px;
+				background: var(--divider);
+				margin: 0;
+			}
+
+			.editorial-hr-thick {
+				border: none;
+				height: 2px;
+				background: var(--text);
+				margin: 0;
+			}
+
+			.article-body p {
+				margin-bottom: 24px;
+			}
+
+			.article-body h3 {
+				font-family: var(--font-display);
+				font-size: 28px;
+				font-weight: 700;
+				line-height: 1.2;
+				letter-spacing: -0.01em;
+				margin-top: 56px;
+				margin-bottom: 20px;
+			}
+
+			.pull-quote {
+				font-family: var(--font-display);
+				font-style: italic;
+				font-size: 26px;
+				line-height: 1.4;
+				color: var(--text);
+				background: var(--pullquote-bg);
+				padding: 40px 48px;
+				border-left: 3px solid var(--accent);
+				position: relative;
+				margin: 48px 0;
+			}
+			.pull-quote::before {
+				content: '\201C';
+				font-family: var(--font-display);
+				font-size: 80px;
+				color: var(--accent);
+				position: absolute;
+				top: 8px;
+				left: 16px;
+				line-height: 1;
+				opacity: 0.3;
+			}
+
+			.back-link {
+				font-family: var(--font-label);
+				font-size: 12px;
+				font-weight: 500;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				color: var(--text-secondary);
+				text-decoration: none;
+				display: inline-flex;
+				align-items: center;
+				gap: 6px;
+			}
+			.back-link:hover { color: var(--accent); }
+
+			.three-tiers {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				gap: 24px;
+				margin: 40px 0;
+			}
+			.tier {
+				padding: 24px;
+				border: 1px solid var(--divider);
+			}
+			.tier-label {
+				font-family: var(--font-label);
+				font-size: 10px;
+				font-weight: 600;
+				letter-spacing: 0.2em;
+				text-transform: uppercase;
+				margin-bottom: 8px;
+			}
+			.tier-label.red { color: #a03a0c; }
+			.tier-label.amber { color: #8a6d3b; }
+			.tier-label.green { color: #4a7c59; }
+			.tier p {
+				font-size: 15px;
+				line-height: 1.6;
+				color: var(--text-secondary);
+				margin-bottom: 0;
+			}
+
+			@media (max-width: 768px) {
+				body { font-size: 16px; }
+				.pull-quote { font-size: 22px; padding: 28px 24px; }
+				.pull-quote::before { font-size: 60px; top: 4px; left: 8px; }
+				.article-body h3 { font-size: 24px; margin-top: 40px; }
+				.three-tiers { grid-template-columns: 1fr; }
+			}
+		</style>
+	</head>
+	<body>
+
+		<!-- Navigation -->
+		<div class="wide-container" style="padding-top: 24px; padding-bottom: 24px;">
+			<a href="/2" class="back-link">
+				<span style="font-size: 14px;">←</span> Back to overview
+			</a>
+		</div>
+		<div class="wide-container"><hr class="editorial-hr-thick" /></div>
+
+		<!-- Article Header -->
+		<header class="container" style="padding-top: 64px; padding-bottom: 48px;">
+			<div class="fade-in">
+				<div class="label" style="margin-bottom: 16px; color: var(--accent);">How I Build</div>
+				<h1 style="font-family: var(--font-display); font-size: clamp(40px, 6vw, 64px); font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 24px;">
+					AI-Native Development
+				</h1>
+				<p style="font-family: var(--font-display); font-style: italic; font-size: 22px; line-height: 1.45; color: var(--text-secondary); max-width: 560px;">
+					AI doesn't replace thinking — it replaces typing. But the relationship between developer and AI is changing faster than anyone expected.
+				</p>
+			</div>
+		</header>
+
+		<div class="wide-container"><hr class="editorial-hr" /></div>
+
+		<!-- Article Body -->
+		<article class="container article-body" style="padding-top: 56px; padding-bottom: 72px;">
+
+			<p class="fade-in">
+				Six months ago, AI coding tools became a non-negotiable part of my workflow. Not as an experiment, not as a side project — as standard tooling, paid for by my employer, integrated into every pull request. At this point, the majority of code in my projects has been written by an AI agent. I don't think of these tools as "assistants" any more than I think of my linter as an "assistant." They're just part of the environment.
+			</p>
+
+			<p class="fade-in">
+				But calling myself "AI-native" isn't about listing the tools I use. It's about a fundamental shift in how I approach building software — from writing code to specifying intent — and a conviction that this shift is still accelerating.
+			</p>
+
+			<h3 class="fade-in">What AI-native actually means</h3>
+
+			<p class="fade-in">
+				There's a common misunderstanding that AI coding tools are fancy autocomplete. You type a function signature, the AI fills in the body, you hit Tab. That's where it started. But the field has moved far beyond that — into autonomous agents that can take a well-specified task and execute it end to end: reading context, writing code, running tests, fixing failures, iterating until it's done.
+			</p>
+
+			<p class="fade-in">
+				OpenAI Codex is where the bulk of my development happens now. I give it medium to large tasks — implement a feature, refactor a module, write a test suite — and it handles them with a thoroughness that still surprises me. It's not fast. A task might run for ten or twenty minutes. But it reads the codebase, makes considered decisions, and produces output that I'd be comfortable merging after review. The key is specifying the task well: what the goal is, what the constraints are, what "done" looks like. The better I define the problem, the better the result.
+			</p>
+
+			<p class="fade-in">
+				Cursor fills a different role. When I need to write code by hand — the kind of nuanced work where I want to be in the editor, thinking line by line — Cursor's Tab completion is indispensable. It predicts what I'm about to type with uncanny accuracy, turning my intent into code as I go. It's less about delegation and more about amplification: I'm still driving, but the friction of typing is nearly gone.
+			</p>
+
+			<p class="fade-in">
+				Claude I mostly use for design and thinking these days. When I need to reason about an architecture decision, stress-test a data model, or think through trade-offs before committing to an approach, a conversation with Claude is where I start. It's not writing my code — it's helping me decide what the code should be.
+			</p>
+
+			<div class="pull-quote fade-in">
+				The skill isn't prompting. It's knowing exactly what to ask for — which means understanding the problem deeply enough that the AI becomes a multiplier, not a crutch.
+			</div>
+
+			<h3 class="fade-in">Short prompts, deep context</h3>
+
+			<p class="fade-in">
+				My technical lead at Buildlinx once mentioned he was surprised by how short my prompts are. I took that as a compliment, because I think it points to something important: effective AI usage isn't about writing elaborate instructions. It's about providing the right context and asking the precise question.
+			</p>
+
+			<p class="fade-in">
+				A long, meandering prompt usually means you haven't figured out what you actually want. A short prompt that gets a perfect result means you've already done the hard work — understanding the architecture, knowing the constraints, identifying the exact gap the AI needs to fill. The AI is strongest when you treat it as a peer who needs a clear brief, not an intern who needs step-by-step instructions.
+			</p>
+
+			<p class="fade-in">
+				This is why I believe AI tools reward experienced developers disproportionately. A junior who doesn't understand the underlying patterns will get plausible-looking code that subtly breaks in production. A developer who knows what correct looks like can use AI to get there ten times faster. The knowledge gap doesn't shrink — it gets amplified.
+			</p>
+
+			<h3 class="fade-in">The three tiers of the German market</h3>
+
+			<p class="fade-in">
+				When I was evaluating potential employers, I noticed the German tech market splits cleanly into three categories on this topic:
+			</p>
+
+			<div class="three-tiers fade-in">
+				<div class="tier">
+					<div class="tier-label red">The Blockers</div>
+					<p>AI tools are banned or blocked by IT. Often driven by data privacy fears or NDA concerns. Working here would feel like going back in time.</p>
+				</div>
+				<div class="tier">
+					<div class="tier-label amber">The Tolerators</div>
+					<p>"Use it if you want, but we won't pay for it and don't put proprietary code in there." A grey zone that signals the company hasn't made up its mind.</p>
+				</div>
+				<div class="tier">
+					<div class="tier-label green">The Enablers</div>
+					<p>Enterprise licenses, integrated workflows, AI seen as a productivity multiplier. This is where I work, and it's the only tier I'd consider joining.</p>
+				</div>
+			</div>
+
+			<p class="fade-in">
+				At Buildlinx, we're firmly in the Enabler category. The company pays for the tools, the team uses them daily, and there's genuine curiosity about how to get better at it. At Check24, where I worked previously, I saw the same trajectory — Copilot licenses rolled out to developers, and colleagues already listing Cursor on their LinkedIn profiles. The best companies understand that blocking AI tools is like blocking Stack Overflow in 2015. It doesn't protect anything — it just slows your team down.
+			</p>
+
+			<h3 class="fade-in">How my workflow has changed</h3>
+
+			<p class="fade-in">
+				A year ago, my coding sessions looked like: read the ticket, plan the approach in my head, write code line by line, run tests, iterate. Now they look more like: read the ticket, think through the design (sometimes with Claude), break it into well-scoped tasks, hand each task to Codex, review the output, refine by hand in Cursor where needed.
+			</p>
+
+			<p class="fade-in">
+				My role has shifted from writer to specifier and reviewer. I spend much more time thinking about <em>what</em> to build and <em>how</em> to describe it than actually typing code. When I do write code manually, it's the stuff that requires real judgment — architectural wiring, tricky state management, the parts where understanding the "why" matters more than getting the syntax right. That's when Cursor's Tab completion shines: it removes the mechanical friction from the creative work.
+			</p>
+
+			<p class="fade-in">
+				The output quality is genuinely high. Codex doesn't just generate plausible code — it reads the existing codebase, follows established patterns, and produces work that feels like it belongs. The catch is that you have to define the task precisely. A vague prompt gets a vague result. A well-specified task with clear constraints and acceptance criteria gets something I'd be comfortable merging after a careful review.
+			</p>
+
+			<div class="pull-quote fade-in">
+				I spend less time writing code and more time defining what the code should do. The quality goes up and the cycle time goes down. That's the whole point.
+			</div>
+
+			<h3 class="fade-in">What changes next</h3>
+
+			<p class="fade-in">
+				I think about this constantly, because the pace of change is genuinely disorienting. In the six months I've been working this way, the tools have already improved noticeably — better context windows, better code understanding, better multi-file reasoning. The gap between "AI-assisted" and "AI-native" is widening.
+			</p>
+
+			<p class="fade-in">
+				Codex already executes multi-step tasks autonomously — reading context, writing code, running tests, fixing failures, iterating. It's not a prototype of the future; it's how I work today. But the trajectory is clear: these agents will get faster, more context-aware, and better at handling ambiguity. The developer's role continues shifting toward specification, review, and architectural judgment. You become the person who defines what "correct" looks like and verifies that the system achieved it.
+			</p>
+
+			<p class="fade-in">
+				This is why I care so much about type safety, incidentally. In a world where AI writes more of the implementation, having a strong type system is your verification layer. If the AI generates code that doesn't type-check, you know immediately. If it generates code that passes the type checker and the tests, you can trust it more deeply. Type safety and AI-native development aren't separate interests — they reinforce each other.
+			</p>
+
+			<p class="fade-in" style="margin-bottom: 0;">
+				I don't know exactly where this ends up. Nobody does. But I know I want to be at a company that's actively figuring it out rather than waiting to see what happens. The developers and teams who build deep intuition for working with AI now are going to have an enormous compounding advantage. That's not a prediction — it's already happening.
+			</p>
+
+		</article>
+
+		<div class="wide-container"><hr class="editorial-hr" /></div>
+
+		<!-- Footer -->
+		<footer class="container" style="padding-top: 40px; padding-bottom: 64px;">
+			<a href="/2" class="back-link">
+				<span style="font-size: 14px;">←</span> Back to overview
+			</a>
+		</footer>
+
+		<script>
+			const observer = new IntersectionObserver(
+				(entries) => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }); },
+				{ threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+			);
+			document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+		</script>
+
+	</body>
+</html>

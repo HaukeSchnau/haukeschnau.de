@@ -1,0 +1,766 @@
+---
+import "../styles/global.css";
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<title>hauke@dev: ~/portfolio</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet" />
+		<style>
+			* {
+				font-family: 'JetBrains Mono', monospace;
+			}
+
+			:root {
+				--bg: #0a0a0a;
+				--green: #00ff41;
+				--green-mid: #00cc33;
+				--green-dim: #1a6b2a;
+				--green-border: #1a3a1a;
+				--glow: 0 0 10px rgba(0, 255, 65, 0.4), 0 0 20px rgba(0, 255, 65, 0.15);
+				--glow-strong: 0 0 10px rgba(0, 255, 65, 0.6), 0 0 30px rgba(0, 255, 65, 0.3), 0 0 60px rgba(0, 255, 65, 0.1);
+			}
+
+			body {
+				background: var(--bg);
+				color: var(--green);
+				margin: 0;
+				padding: 0;
+				overflow-x: hidden;
+				-webkit-font-smoothing: none;
+				-moz-osx-font-smoothing: unset;
+			}
+
+			/* CRT Scanlines */
+			.scanlines::after {
+				content: "";
+				position: fixed;
+				inset: 0;
+				background: repeating-linear-gradient(
+					0deg,
+					transparent,
+					transparent 1px,
+					rgba(0, 0, 0, 0.15) 1px,
+					rgba(0, 0, 0, 0.15) 2px
+				);
+				pointer-events: none;
+				z-index: 1000;
+			}
+
+			/* Screen flicker */
+			@keyframes flicker {
+				0% { opacity: 1; }
+				3% { opacity: 0.97; }
+				6% { opacity: 1; }
+				7.5% { opacity: 0.95; }
+				9% { opacity: 1; }
+				50% { opacity: 1; }
+				52% { opacity: 0.98; }
+				54% { opacity: 1; }
+				75% { opacity: 1; }
+				77% { opacity: 0.96; }
+				78% { opacity: 1; }
+			}
+
+			.terminal-screen {
+				animation: flicker 8s infinite;
+			}
+
+			/* Blinking cursor */
+			@keyframes blink {
+				0%, 49% { opacity: 1; }
+				50%, 100% { opacity: 0; }
+			}
+
+			.cursor-blink {
+				animation: blink 1s step-end infinite;
+				color: var(--green);
+				text-shadow: var(--glow);
+			}
+
+			/* Typing effect */
+			@keyframes typing {
+				from { width: 0; }
+				to { width: 100%; }
+			}
+
+			@keyframes fadeInLine {
+				from { opacity: 0; }
+				to { opacity: 1; }
+			}
+
+			.boot-line {
+				opacity: 0;
+				animation: fadeInLine 0.05s ease-out forwards;
+			}
+			.boot-line:nth-child(1) { animation-delay: 0.2s; }
+			.boot-line:nth-child(2) { animation-delay: 0.5s; }
+			.boot-line:nth-child(3) { animation-delay: 0.9s; }
+			.boot-line:nth-child(4) { animation-delay: 1.4s; }
+			.boot-line:nth-child(5) { animation-delay: 1.8s; }
+			.boot-line:nth-child(6) { animation-delay: 2.0s; }
+			.boot-line:nth-child(7) { animation-delay: 2.2s; }
+			.boot-line:nth-child(8) { animation-delay: 2.4s; }
+			.boot-line:nth-child(9) { animation-delay: 2.7s; }
+			.boot-line:nth-child(10) { animation-delay: 2.9s; }
+			.boot-line:nth-child(11) { animation-delay: 3.1s; }
+			.boot-line:nth-child(12) { animation-delay: 3.3s; }
+
+			/* Section fade-in on scroll */
+			.section-reveal {
+				opacity: 0;
+				transform: translateY(8px);
+				transition: opacity 0.6s ease, transform 0.6s ease;
+			}
+			.section-reveal.visible {
+				opacity: 1;
+				transform: translateY(0);
+			}
+
+			/* Title bar dots */
+			.dot {
+				width: 12px;
+				height: 12px;
+				border-radius: 50%;
+				display: inline-block;
+			}
+
+			/* Prompt styling */
+			.prompt {
+				color: var(--green-mid);
+				white-space: nowrap;
+			}
+			.prompt-user {
+				color: var(--green);
+			}
+			.prompt-path {
+				color: #00cc99;
+			}
+
+			/* Command output styling */
+			.cmd {
+				color: var(--green);
+				text-shadow: 0 0 6px rgba(0, 255, 65, 0.25);
+			}
+
+			.output {
+				color: var(--green-mid);
+			}
+
+			.dim {
+				color: var(--green-dim);
+			}
+
+			/* Section divider */
+			.divider {
+				border: none;
+				border-top: 1px dashed var(--green-border);
+				margin: 2.5rem 0;
+			}
+
+			/* Glow heading */
+			.glow-text {
+				text-shadow: var(--glow-strong);
+			}
+
+			/* Links */
+			a.terminal-link {
+				color: var(--green);
+				text-decoration: none;
+				border-bottom: 1px solid var(--green-border);
+				transition: border-color 0.2s, text-shadow 0.2s;
+			}
+			a.terminal-link:hover {
+				border-color: var(--green);
+				text-shadow: var(--glow);
+			}
+
+			/* Photo placeholders */
+			.photo-placeholder {
+				border: 1px solid var(--green-border);
+				background: rgba(0, 255, 65, 0.02);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				position: relative;
+				overflow: hidden;
+			}
+			.photo-placeholder::before {
+				content: "";
+				position: absolute;
+				inset: 4px;
+				border: 1px dashed var(--green-border);
+			}
+
+			/* Project entry hover */
+			.project-entry {
+				padding: 1rem 0.75rem;
+				margin: 0 -0.75rem;
+				border-radius: 4px;
+				transition: background 0.2s;
+			}
+			.project-entry:hover {
+				background: rgba(0, 255, 65, 0.03);
+			}
+
+			/* Blog entry hover */
+			.blog-entry {
+				padding: 1rem 0.75rem;
+				margin: 0 -0.75rem;
+				border-radius: 4px;
+				transition: background 0.2s;
+				border-left: 2px solid transparent;
+			}
+			.blog-entry:hover {
+				background: rgba(0, 255, 65, 0.03);
+				border-left-color: var(--green-dim);
+			}
+
+			/* Work entry */
+			.work-entry {
+				padding-left: 1rem;
+				border-left: 2px solid var(--green-border);
+			}
+
+			/* Contact input effect */
+			@keyframes inputBlink {
+				0%, 49% { border-right-color: var(--green); }
+				50%, 100% { border-right-color: transparent; }
+			}
+			.input-prompt {
+				border-right: 2px solid var(--green);
+				animation: inputBlink 1s step-end infinite;
+				padding-right: 4px;
+			}
+
+			/* Title bar */
+			.title-bar {
+				background: #111;
+				border-bottom: 1px solid var(--green-border);
+				border-radius: 10px 10px 0 0;
+				padding: 0.75rem 1rem;
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				position: sticky;
+				top: 0;
+				z-index: 100;
+			}
+
+			/* CRT vignette */
+			.vignette::before {
+				content: "";
+				position: fixed;
+				inset: 0;
+				background: radial-gradient(
+					ellipse at center,
+					transparent 60%,
+					rgba(0, 0, 0, 0.6) 100%
+				);
+				pointer-events: none;
+				z-index: 999;
+			}
+
+			/* Scrollbar */
+			::-webkit-scrollbar {
+				width: 8px;
+			}
+			::-webkit-scrollbar-track {
+				background: var(--bg);
+			}
+			::-webkit-scrollbar-thumb {
+				background: var(--green-border);
+				border-radius: 4px;
+			}
+			::-webkit-scrollbar-thumb:hover {
+				background: var(--green-dim);
+			}
+
+			/* Value list checkmarks */
+			.value-item::before {
+				content: "✓";
+				color: var(--green);
+				margin-right: 0.75rem;
+				text-shadow: var(--glow);
+			}
+
+			/* Tech tree connector */
+			.tree-branch {
+				color: var(--green-dim);
+			}
+		</style>
+	</head>
+	<body class="scanlines vignette">
+		<div class="terminal-screen max-w-[920px] mx-auto min-h-screen" style="border: 1px solid var(--green-border); margin-top: 1rem; margin-bottom: 2rem; border-radius: 10px; box-shadow: 0 0 40px rgba(0, 255, 65, 0.05);">
+
+			<!-- Title Bar -->
+			<div class="title-bar">
+				<div class="dot" style="background: #ff5f57;"></div>
+				<div class="dot" style="background: #febc2e;"></div>
+				<div class="dot" style="background: #28c840;"></div>
+				<span class="text-xs ml-4" style="color: var(--green-dim);">hauke@dev: ~/portfolio</span>
+				<span class="text-xs ml-auto" style="color: var(--green-dim);">bash</span>
+			</div>
+
+			<!-- Terminal Content -->
+			<div class="px-4 py-6 md:px-8 md:py-8 leading-relaxed text-sm md:text-[15px]" style="line-height: 1.75;">
+
+				<!-- Back link -->
+				<div class="mb-8">
+					<a href="/" class="terminal-link text-xs" style="color: var(--green-dim);">
+						<span class="prompt">hauke@dev ~/portfolio $</span> <span class="cmd">cd ../</span>
+					</a>
+				</div>
+
+				<!-- ═══════════════════════════════════════ -->
+				<!-- HERO / BOOT SEQUENCE                    -->
+				<!-- ═══════════════════════════════════════ -->
+				<section class="mb-12">
+					<div class="boot-line dim">GNU/Linux 6.8.0-hauke x86_64</div>
+					<div class="boot-line dim">&nbsp;</div>
+					<div class="boot-line" style="color: var(--green-dim);">Booting haukeschnau.de...</div>
+					<div class="boot-line" style="color: var(--green-dim);">Loading modules............. <span style="color: var(--green);">done</span></div>
+					<div class="boot-line" style="color: var(--green-dim);">Initializing portfolio...... <span style="color: var(--green);">done</span></div>
+					<div class="boot-line dim">&nbsp;</div>
+					<div class="boot-line">
+						<span class="prompt"><span class="prompt-user">hauke</span>@<span>dev</span> <span class="prompt-path">~</span> $</span> <span class="cmd">whoami</span>
+					</div>
+					<div class="boot-line mt-2 text-lg md:text-xl glow-text" style="color: var(--green);">
+						Hauke Schnau — Software Developer
+					</div>
+					<div class="boot-line output">Hamburg / Bremen, Germany</div>
+					<div class="boot-line mt-6">
+						<span class="prompt"><span class="prompt-user">hauke</span>@<span>dev</span> <span class="prompt-path">~</span> $</span> <span class="cmd">cat intro.md</span>
+					</div>
+					<div class="boot-line mt-2 output max-w-[680px]">
+						Building type-safe, AI-native software. Full-stack TypeScript engineer
+						with 3+ years shipping production code. Currently weighing offers from
+						Check24 (Professional Developer, ~63k) and Buildlinx (Software Developer
+						with Architecture Responsibility, 64k).
+					</div>
+					<div class="boot-line mt-4 output">
+						B.Sc. Computer Science — Universität Hamburg (GPA: 1.47)
+					</div>
+					<div class="mt-4">
+						<span class="prompt"><span class="prompt-user">hauke</span>@<span>dev</span> <span class="prompt-path">~</span> $</span> <span class="cursor-blink">█</span>
+					</div>
+				</section>
+
+				<hr class="divider" />
+
+				<!-- ═══════════════════════════════════════ -->
+				<!-- TECH STACK                              -->
+				<!-- ═══════════════════════════════════════ -->
+				<section class="section-reveal mb-12">
+					<div class="mb-4">
+						<span class="prompt"><span class="prompt-user">hauke</span>@<span>dev</span> <span class="prompt-path">~</span> $</span> <span class="cmd">echo $TECH_STACK | sort</span>
+					</div>
+					<pre class="output text-xs md:text-sm" style="line-height: 1.9; overflow-x: auto;"><code><span class="tree-branch">~/tech/</span>
+<span class="tree-branch">├──</span> <span style="color: var(--green);">languages/</span>
+<span class="tree-branch">│   ├──</span> TypeScript <span class="dim">(primary)</span>
+<span class="tree-branch">│   ├──</span> Go
+<span class="tree-branch">│   ├──</span> PHP
+<span class="tree-branch">│   ├──</span> Python
+<span class="tree-branch">│   └──</span> Java
+<span class="tree-branch">├──</span> <span style="color: var(--green);">frontend/</span>
+<span class="tree-branch">│   ├──</span> React
+<span class="tree-branch">│   ├──</span> React Native
+<span class="tree-branch">│   ├──</span> Next.js
+<span class="tree-branch">│   ├──</span> Expo
+<span class="tree-branch">│   ├──</span> Tailwind CSS
+<span class="tree-branch">│   └──</span> shadcn/ui
+<span class="tree-branch">├──</span> <span style="color: var(--green);">backend/</span>
+<span class="tree-branch">│   ├──</span> Node.js
+<span class="tree-branch">│   ├──</span> Bun
+<span class="tree-branch">│   ├──</span> tRPC
+<span class="tree-branch">│   ├──</span> Drizzle ORM
+<span class="tree-branch">│   └──</span> Symfony
+<span class="tree-branch">├──</span> <span style="color: var(--green);">type-safety/</span>
+<span class="tree-branch">│   ├──</span> Zod
+<span class="tree-branch">│   ├──</span> Effect TS
+<span class="tree-branch">│   └──</span> tRPC <span class="dim">(end-to-end)</span>
+<span class="tree-branch">├──</span> <span style="color: var(--green);">build/</span>
+<span class="tree-branch">│   ├──</span> Vite
+<span class="tree-branch">│   ├──</span> Turborepo
+<span class="tree-branch">│   └──</span> OXC Toolchain
+<span class="tree-branch">├──</span> <span style="color: var(--green);">testing/</span>
+<span class="tree-branch">│   ├──</span> Vitest
+<span class="tree-branch">│   └──</span> Playwright
+<span class="tree-branch">├──</span> <span style="color: var(--green);">infra/</span>
+<span class="tree-branch">│   ├──</span> Docker
+<span class="tree-branch">│   ├──</span> NixOS / Nix Darwin
+<span class="tree-branch">│   └──</span> Linux
+<span class="tree-branch">├──</span> <span style="color: var(--green);">vcs/</span>
+<span class="tree-branch">│   ├──</span> Git
+<span class="tree-branch">│   └──</span> Jujutsu VCS
+<span class="tree-branch">└──</span> <span style="color: var(--green);">ai/</span>
+<span class="tree-branch">    ├──</span> OpenAI Codex
+<span class="tree-branch">    ├──</span> Cursor
+<span class="tree-branch">    └──</span> Claude</code></pre>
+				</section>
+
+				<hr class="divider" />
+
+				<!-- ═══════════════════════════════════════ -->
+				<!-- CORE VALUES                             -->
+				<!-- ═══════════════════════════════════════ -->
+				<section class="section-reveal mb-12">
+					<div class="mb-4">
+						<span class="prompt"><span class="prompt-user">hauke</span>@<span>dev</span> <span class="prompt-path">~</span> $</span> <span class="cmd">cat values.conf</span>
+					</div>
+					<div class="output pl-2 md:pl-4" style="border-left: 2px solid var(--green-border);">
+						<div class="dim text-xs mb-3"># /etc/hauke/values.conf — core engineering principles</div>
+						<div class="value-item flex items-start mb-2">End-to-end type safety through the entire stack</div>
+						<div class="value-item flex items-start mb-2">Developer experience is not a luxury, it's a multiplier</div>
+						<div class="value-item flex items-start mb-2">AI-native development — Cursor, Claude, Codex are daily tools</div>
+						<div class="value-item flex items-start mb-2">Ship fast, iterate faster — pragmatism over perfection</div>
+						<div class="value-item flex items-start mb-2">Modern tooling chosen for productivity, not hype</div>
+						<div class="value-item flex items-start">Local-first architecture where it makes sense</div>
+					</div>
+				</section>
+
+				<hr class="divider" />
+
+				<!-- ═══════════════════════════════════════ -->
+				<!-- PROJECTS                                -->
+				<!-- ═══════════════════════════════════════ -->
+				<section class="section-reveal mb-12">
+					<div class="mb-4">
+						<span class="prompt"><span class="prompt-user">hauke</span>@<span>dev</span> <span class="prompt-path">~</span> $</span> <span class="cmd">ls -la ~/projects/</span>
+					</div>
+					<div class="output text-xs md:text-sm mb-2">
+						<span class="dim">total 4</span>
+					</div>
+					<div class="output text-xs md:text-sm mb-1 dim">
+						drwxr-xr-x  hauke dev  4096  Mar  2 2026  <span style="color: var(--green);">.</span>
+					</div>
+
+					<!-- Studienbuch -->
+					<div class="project-entry mt-4">
+						<div class="output text-xs md:text-sm">
+							drwxr-xr-x  hauke dev  4096  Aug 2023  <span style="color: var(--green); text-shadow: var(--glow);">studienbuch/</span>
+						</div>
+						<div class="mt-2 pl-4 md:pl-8">
+							<div class="output">
+								<a href="https://studienbuch.app" target="_blank" rel="noopener" class="terminal-link">studienbuch.app</a>
+								<span class="dim ml-2">· Aug 2023 – present</span>
+							</div>
+							<div class="mt-1 output text-xs md:text-sm max-w-[600px]">
+								Mobile app for students to manage grades, absences, homework, and
+								substitution schedules. Local-First architecture. Actively used
+								in production.
+							</div>
+							<div class="mt-1 dim text-xs">
+								React Native · TypeScript · SQL · Docker
+							</div>
+						</div>
+					</div>
+
+					<!-- Corona OHZ -->
+					<div class="project-entry mt-4">
+						<div class="output text-xs md:text-sm">
+							drwxr-xr-x  hauke dev  4096  Jan 2021  <span style="color: var(--green); text-shadow: var(--glow);">corona-ohz/</span>
+						</div>
+						<div class="mt-2 pl-4 md:pl-8">
+							<div class="output">
+								Corona OHZ
+								<span class="dim ml-2">· 2021 – 2022</span>
+							</div>
+							<div class="mt-1 output text-xs md:text-sm max-w-[600px]">
+								Regional COVID dashboard for Landkreis Osterholz. Simple summary
+								of local numbers and rules.
+							</div>
+							<div class="mt-1 dim text-xs">
+								Next.js · Python
+							</div>
+						</div>
+					</div>
+
+					<!-- Karaoke App -->
+					<div class="project-entry mt-4">
+						<div class="output text-xs md:text-sm">
+							drwxr-xr-x  hauke dev  4096  Mar 2021  <span style="color: var(--green); text-shadow: var(--glow);">karaoke-app/</span>
+						</div>
+						<div class="mt-2 pl-4 md:pl-8">
+							<div class="output">
+								Karaoke App
+								<span class="dim ml-2">· 2021 – 2022</span>
+							</div>
+							<div class="mt-1 output text-xs md:text-sm max-w-[600px]">
+								Sing along to any song. AI-powered vocal/instrumental separation
+								using Deezer's algorithm.
+							</div>
+							<div class="mt-1 dim text-xs">
+								Web Audio API · Python · Machine Learning
+							</div>
+						</div>
+					</div>
+
+					<!-- Freelance Websites -->
+					<div class="project-entry mt-4">
+						<div class="output text-xs md:text-sm">
+							drwxr-xr-x  hauke dev  4096  Aug 2022  <span style="color: var(--green); text-shadow: var(--glow);">freelance-sites/</span>
+						</div>
+						<div class="mt-2 pl-4 md:pl-8">
+							<div class="output">
+								Freelance Websites
+								<span class="dim ml-2">· 2022 – 2023</span>
+							</div>
+							<div class="mt-1 output text-xs md:text-sm max-w-[600px]">
+								Websites for artists and small businesses. SEO optimization.
+							</div>
+							<div class="mt-1 dim text-xs">
+								Astro · Next.js · SEO
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<hr class="divider" />
+
+				<!-- ═══════════════════════════════════════ -->
+				<!-- WORK EXPERIENCE                         -->
+				<!-- ═══════════════════════════════════════ -->
+				<section class="section-reveal mb-12">
+					<div class="mb-6">
+						<span class="prompt"><span class="prompt-user">hauke</span>@<span>dev</span> <span class="prompt-path">~</span> $</span> <span class="cmd">git log --oneline career</span>
+					</div>
+
+					<div class="work-entry mb-6">
+						<div class="flex flex-col md:flex-row md:items-baseline gap-1 md:gap-3">
+							<span class="text-xs" style="color: #4a9e5c;">HEAD →</span>
+							<span style="color: var(--green); text-shadow: var(--glow);">Buildlinx GmbH</span>
+						</div>
+						<div class="dim text-xs mt-1">Oct 2024 – present · Frontend Lead</div>
+						<div class="output mt-2 text-xs md:text-sm max-w-[620px]">
+							Frontend lead with architecture responsibility. Building management IoT
+							using EdgeX Foundry. Working across Go and TypeScript. Offered
+							"Software Developer mit Architekturverantwortung" at 64k.
+						</div>
+					</div>
+
+					<div class="work-entry mb-6">
+						<div class="flex flex-col md:flex-row md:items-baseline gap-1 md:gap-3">
+							<span class="dim text-xs">a3f21c8</span>
+							<span style="color: var(--green);">Check24</span>
+						</div>
+						<div class="dim text-xs mt-1">Aug 2023 – Oct 2024 · Software Developer</div>
+						<div class="output mt-2 text-xs md:text-sm max-w-[620px]">
+							React/TypeScript + PHP/Symfony. Code reviews, performance optimization.
+							Rated <span style="color: var(--green);">"stets zu unserer vollsten Zufriedenheit"</span> (highest rating).
+							Offered Professional-level position at ~63k.
+						</div>
+					</div>
+
+					<div class="work-entry mb-6">
+						<div class="flex flex-col md:flex-row md:items-baseline gap-1 md:gap-3">
+							<span class="dim text-xs">7e892b1</span>
+							<span style="color: var(--green);">Freelance</span>
+						</div>
+						<div class="dim text-xs mt-1">Aug 2022 – Dec 2023 · Web Developer</div>
+						<div class="output mt-2 text-xs md:text-sm max-w-[620px]">
+							Websites for artists and small businesses. SEO optimization and
+							modern web standards.
+						</div>
+					</div>
+
+					<div class="work-entry">
+						<div class="flex flex-col md:flex-row md:items-baseline gap-1 md:gap-3">
+							<span class="dim text-xs">1b4c0f3</span>
+							<span style="color: var(--green);">homevoice GmbH</span>
+						</div>
+						<div class="dim text-xs mt-1">Aug 2021 – Jul 2022 · Software Developer</div>
+						<div class="output mt-2 text-xs md:text-sm max-w-[620px]">
+							Spring Boot (Java) + React. Property management software.
+						</div>
+					</div>
+				</section>
+
+				<hr class="divider" />
+
+				<!-- ═══════════════════════════════════════ -->
+				<!-- BLOG                                    -->
+				<!-- ═══════════════════════════════════════ -->
+				<section class="section-reveal mb-12">
+					<div class="mb-4">
+						<span class="prompt"><span class="prompt-user">hauke</span>@<span>dev</span> <span class="prompt-path">~</span> $</span> <span class="cmd">ls ~/blog/</span>
+					</div>
+
+					<div class="blog-entry mt-4">
+						<div class="flex flex-col md:flex-row md:items-baseline gap-1 md:gap-3">
+							<span class="dim text-xs whitespace-nowrap">-rw-r--r--  Jan 2026</span>
+							<span style="color: var(--green);">why-i-chose-effect-ts.md</span>
+						</div>
+						<div class="mt-2 output text-sm glow-text" style="color: var(--green);">
+							"Why I Chose Effect TS for Error Handling"
+						</div>
+						<div class="mt-1 output text-xs md:text-sm max-w-[620px]" style="color: var(--green-mid);">
+							TypeScript's type system is powerful, but error handling remains an
+							afterthought. Effect TS changes that by making errors a first-class
+							part of the type signature. Here's why I switched from try/catch
+							to Effect for all new projects...
+						</div>
+					</div>
+
+					<div class="blog-entry mt-4">
+						<div class="flex flex-col md:flex-row md:items-baseline gap-1 md:gap-3">
+							<span class="dim text-xs whitespace-nowrap">-rw-r--r--  Dec 2025</span>
+							<span style="color: var(--green);">end-to-end-typescript.md</span>
+						</div>
+						<div class="mt-2 output text-sm glow-text" style="color: var(--green);">
+							"The Case for End-to-End TypeScript"
+						</div>
+						<div class="mt-1 output text-xs md:text-sm max-w-[620px]" style="color: var(--green-mid);">
+							From database schema to API layer to frontend components — one
+							language, one type system, zero translation errors. tRPC + Drizzle +
+							Zod make this not just possible but pleasant. A practical guide to
+							full-stack type safety...
+						</div>
+					</div>
+
+					<div class="blog-entry mt-4">
+						<div class="flex flex-col md:flex-row md:items-baseline gap-1 md:gap-3">
+							<span class="dim text-xs whitespace-nowrap">-rw-r--r--  Nov 2025</span>
+							<span style="color: var(--green);">ai-assisted-development.md</span>
+						</div>
+						<div class="mt-2 output text-sm glow-text" style="color: var(--green);">
+							"AI-Assisted Development: My Daily Workflow with Cursor &amp; Claude"
+						</div>
+						<div class="mt-1 output text-xs md:text-sm max-w-[620px]" style="color: var(--green-mid);">
+							AI tools aren't replacing developers — they're amplifying them. My
+							daily workflow integrates Cursor and Claude at every stage: from
+							architecture decisions to code reviews to documentation. Here's what
+							actually works and what doesn't...
+						</div>
+					</div>
+				</section>
+
+				<hr class="divider" />
+
+				<!-- ═══════════════════════════════════════ -->
+				<!-- PHOTOS                                  -->
+				<!-- ═══════════════════════════════════════ -->
+				<section class="section-reveal mb-12">
+					<div class="mb-6">
+						<span class="prompt"><span class="prompt-user">hauke</span>@<span>dev</span> <span class="prompt-path">~</span> $</span> <span class="cmd">ls ~/photos/</span>
+					</div>
+
+					<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+						<!-- Profile Photo -->
+						<div class="photo-placeholder" style="aspect-ratio: 3/4; border-radius: 4px;">
+							<div class="text-center">
+								<pre class="text-xs dim" style="line-height: 1.4;">
+ ┌─────────┐
+ │  ◉   ◉  │
+ │    ▲    │
+ │  ╰───╯  │
+ └─────────┘</pre>
+								<div class="dim text-xs mt-2">profile.jpg</div>
+								<div class="dim text-[10px]">640×853 · 247KB</div>
+							</div>
+						</div>
+
+						<!-- Dog Photo -->
+						<div class="photo-placeholder" style="aspect-ratio: 3/4; border-radius: 4px;">
+							<div class="text-center">
+								<pre class="text-xs dim" style="line-height: 1.4;">
+   ∧＿∧
+  ( ・ω・)
+  /　 つ🦴
+ しーＪ</pre>
+								<div class="dim text-xs mt-2">dog_friend.jpg</div>
+								<div class="dim text-[10px]">640×853 · 312KB</div>
+							</div>
+						</div>
+
+						<!-- Workspace Photo -->
+						<div class="photo-placeholder" style="aspect-ratio: 3/4; border-radius: 4px;">
+							<div class="text-center">
+								<pre class="text-xs dim" style="line-height: 1.4;">
+ ┌──────────┐
+ │ >_ █     │
+ │          │
+ ├──────────┤
+ └──────────┘</pre>
+								<div class="dim text-xs mt-2">workspace.jpg</div>
+								<div class="dim text-[10px]">640×853 · 189KB</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<hr class="divider" />
+
+				<!-- ═══════════════════════════════════════ -->
+				<!-- CONTACT                                 -->
+				<!-- ═══════════════════════════════════════ -->
+				<section class="section-reveal mb-8">
+					<div class="mb-4">
+						<span class="prompt"><span class="prompt-user">hauke</span>@<span>dev</span> <span class="prompt-path">~</span> $</span> <span class="cmd">cat ~/.contact</span>
+					</div>
+
+					<div class="output pl-2 md:pl-4" style="border-left: 2px solid var(--green-border);">
+						<div class="mb-3 flex flex-col md:flex-row md:items-baseline gap-1 md:gap-3">
+							<span class="dim text-xs w-20">GitHub</span>
+							<a href="https://github.com/HaukeSchnau" target="_blank" rel="noopener" class="terminal-link">github.com/HaukeSchnau</a>
+						</div>
+						<div class="mb-3 flex flex-col md:flex-row md:items-baseline gap-1 md:gap-3">
+							<span class="dim text-xs w-20">LinkedIn</span>
+							<a href="https://linkedin.com/in/haukeschnau" target="_blank" rel="noopener" class="terminal-link">linkedin.com/in/haukeschnau</a>
+						</div>
+						<div class="mb-3 flex flex-col md:flex-row md:items-baseline gap-1 md:gap-3">
+							<span class="dim text-xs w-20">Email</span>
+							<a href="mailto:hauke.schnau@studium.uni-hamburg.de" class="terminal-link">hauke.schnau@studium.uni-hamburg.de</a>
+						</div>
+						<div class="flex flex-col md:flex-row md:items-baseline gap-1 md:gap-3">
+							<span class="dim text-xs w-20">Website</span>
+							<a href="https://haukeschnau.de" class="terminal-link">haukeschnau.de</a>
+						</div>
+					</div>
+
+					<div class="mt-8">
+						<span class="prompt"><span class="prompt-user">hauke</span>@<span>dev</span> <span class="prompt-path">~</span> $</span> <span class="input-prompt"> </span>
+					</div>
+				</section>
+
+				<!-- Footer -->
+				<div class="mt-12 pt-4" style="border-top: 1px solid var(--green-border);">
+					<div class="dim text-xs text-center">
+						<pre style="line-height: 1.3;">
+ ██╗  ██╗███████╗
+ ██║  ██║██╔════╝
+ ███████║███████╗
+ ██╔══██║╚════██║
+ ██║  ██║███████║
+ ╚═╝  ╚═╝╚══════╝</pre>
+						<div class="mt-2 dim">© 2026 Hauke Schnau · Built with Astro + Tailwind</div>
+						<div class="dim text-[10px] mt-1">Session ended. Connection closed.</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<script>
+			const observer = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((entry) => {
+						if (entry.isIntersecting) {
+							entry.target.classList.add("visible");
+						}
+					});
+				},
+				{ threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+			);
+
+			document.querySelectorAll(".section-reveal").forEach((el) => {
+				observer.observe(el);
+			});
+		</script>
+	</body>
+</html>

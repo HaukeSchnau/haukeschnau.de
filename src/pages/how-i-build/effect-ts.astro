@@ -1,0 +1,304 @@
+---
+import "../../styles/global.css";
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Effect TS — How I Build — Hauke Schnau</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet" />
+		<style>
+			:root {
+				--bg: #FAF7F2;
+				--text: #1a1a1a;
+				--text-secondary: #6b6155;
+				--accent: #c1440e;
+				--divider: #ddd5c9;
+				--pullquote-bg: #f0ebe3;
+				--font-display: 'Playfair Display', Georgia, serif;
+				--font-body: 'Source Serif 4', Georgia, serif;
+				--font-label: 'Outfit', system-ui, sans-serif;
+			}
+
+			* { margin: 0; padding: 0; box-sizing: border-box; }
+			html { scroll-behavior: smooth; }
+
+			body {
+				background: var(--bg);
+				color: var(--text);
+				font-family: var(--font-body);
+				font-size: 18px;
+				line-height: 1.7;
+				-webkit-font-smoothing: antialiased;
+				overflow-x: hidden;
+			}
+
+			body::before {
+				content: '';
+				position: fixed;
+				inset: 0;
+				z-index: 9999;
+				pointer-events: none;
+				opacity: 0.025;
+				background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+				background-repeat: repeat;
+				background-size: 256px 256px;
+			}
+
+			.fade-in {
+				opacity: 0;
+				transform: translateY(24px);
+				transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+			}
+			.fade-in.visible { opacity: 1; transform: translateY(0); }
+			.delay-1 { transition-delay: 0.1s; }
+			.delay-2 { transition-delay: 0.2s; }
+			.delay-3 { transition-delay: 0.3s; }
+
+			a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
+			a:hover { color: #a03a0c; }
+
+			.label {
+				font-family: var(--font-label);
+				font-size: 11px;
+				font-weight: 500;
+				letter-spacing: 0.15em;
+				text-transform: uppercase;
+				color: var(--text-secondary);
+			}
+
+			.container {
+				max-width: 720px;
+				margin: 0 auto;
+				padding: 0 24px;
+			}
+
+			.wide-container {
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 0 24px;
+			}
+
+			.editorial-hr {
+				border: none;
+				height: 1px;
+				background: var(--divider);
+				margin: 0;
+			}
+
+			.editorial-hr-thick {
+				border: none;
+				height: 2px;
+				background: var(--text);
+				margin: 0;
+			}
+
+			.article-body p {
+				margin-bottom: 24px;
+			}
+
+			.article-body h3 {
+				font-family: var(--font-display);
+				font-size: 28px;
+				font-weight: 700;
+				line-height: 1.2;
+				letter-spacing: -0.01em;
+				margin-top: 56px;
+				margin-bottom: 20px;
+			}
+
+			.pull-quote {
+				font-family: var(--font-display);
+				font-style: italic;
+				font-size: 26px;
+				line-height: 1.4;
+				color: var(--text);
+				background: var(--pullquote-bg);
+				padding: 40px 48px;
+				border-left: 3px solid var(--accent);
+				position: relative;
+				margin: 48px 0;
+			}
+			.pull-quote::before {
+				content: '\201C';
+				font-family: var(--font-display);
+				font-size: 80px;
+				color: var(--accent);
+				position: absolute;
+				top: 8px;
+				left: 16px;
+				line-height: 1;
+				opacity: 0.3;
+			}
+
+			.code-block {
+				background: #2d2a24;
+				color: #e8e0d4;
+				font-family: 'JetBrains Mono', 'Fira Code', monospace;
+				font-size: 14px;
+				line-height: 1.7;
+				padding: 32px;
+				border-radius: 2px;
+				overflow-x: auto;
+				margin: 32px 0;
+			}
+			.code-block .keyword { color: #c1440e; }
+			.code-block .type { color: #d4a574; }
+			.code-block .string { color: #8fae6e; }
+			.code-block .comment { color: #7a7265; font-style: italic; }
+
+			.back-link {
+				font-family: var(--font-label);
+				font-size: 12px;
+				font-weight: 500;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				color: var(--text-secondary);
+				text-decoration: none;
+				display: inline-flex;
+				align-items: center;
+				gap: 6px;
+			}
+			.back-link:hover { color: var(--accent); }
+
+			@media (max-width: 768px) {
+				body { font-size: 16px; }
+				.pull-quote { font-size: 22px; padding: 28px 24px; }
+				.pull-quote::before { font-size: 60px; top: 4px; left: 8px; }
+				.article-body h3 { font-size: 24px; margin-top: 40px; }
+			}
+		</style>
+	</head>
+	<body>
+
+		<!-- Navigation -->
+		<div class="wide-container" style="padding-top: 24px; padding-bottom: 24px;">
+			<a href="/2" class="back-link">
+				<span style="font-size: 14px;">←</span> Back to overview
+			</a>
+		</div>
+		<div class="wide-container"><hr class="editorial-hr-thick" /></div>
+
+		<!-- Article Header -->
+		<header class="container" style="padding-top: 64px; padding-bottom: 48px;">
+			<div class="fade-in">
+				<div class="label" style="margin-bottom: 16px; color: var(--accent);">How I Build</div>
+				<h1 style="font-family: var(--font-display); font-size: clamp(40px, 6vw, 64px); font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 24px;">
+					Effect TS
+				</h1>
+				<p style="font-family: var(--font-display); font-style: italic; font-size: 22px; line-height: 1.45; color: var(--text-secondary); max-width: 560px;">
+					Errors belong in the type signature, not in the stack trace. But Effect is about much more than error handling.
+				</p>
+			</div>
+		</header>
+
+		<div class="wide-container"><hr class="editorial-hr" /></div>
+
+		<!-- Article Body -->
+		<article class="container article-body" style="padding-top: 56px; padding-bottom: 72px;">
+
+			<p class="fade-in">
+				The standard pitch for Effect TS is about error handling, and that's where I started too. TypeScript's try/catch is invisible to the type system. You can forget to handle an error — or not even know a function can throw — and the compiler won't say a word. Effect fixes that by making errors part of the return type. If a function can fail, the type tells you how.
+			</p>
+
+			<p class="fade-in">
+				But after months of building with it, I've realised that typed errors are just the entry point. Effect is really a different way of thinking about how programs are composed.
+			</p>
+
+			<h3 class="fade-in">The problem with try/catch</h3>
+
+			<p class="fade-in">
+				Consider a function that fetches a user, validates their permissions, and returns a dashboard. In standard TypeScript, each of those steps can throw. The caller has no idea what kinds of errors to expect. You wrap the whole thing in try/catch, log "something went wrong," and hope for the best. The type signature says <code>Promise&lt;Dashboard&gt;</code>, which is a lie — it can also produce a network error, a validation error, or an auth error, but none of that shows up in the types.
+			</p>
+
+			<p class="fade-in">
+				With Effect, the return type becomes something like <code>Effect&lt;Dashboard, NetworkError | AuthError | ValidationError, UserService&gt;</code>. Every failure mode is explicit. Every dependency is declared. You can't forget to handle a case because the compiler won't let you run the program until you do.
+			</p>
+
+			<div class="pull-quote fade-in">
+				The type signature stops lying to you. It tells you what can go wrong, what the function needs, and what it will produce.
+			</div>
+
+			<h3 class="fade-in">Beyond errors: dependency injection</h3>
+
+			<p class="fade-in">
+				The third type parameter in Effect — the "requirements" channel — is what made it click for me. Instead of importing a database client at the top of a file and coupling everything to a concrete implementation, you declare what a function <em>needs</em> as part of its type. The actual implementation gets provided at the edge, when you run the program.
+			</p>
+
+			<p class="fade-in">
+				This isn't a new idea — it's dependency injection. But in most TypeScript codebases, DI means either a heavyweight framework with decorators and reflection, or passing things through function arguments until every signature is five parameters long. Effect makes it structural. Dependencies are tracked by the type system. If you forget to provide one, the program won't compile.
+			</p>
+
+			<p class="fade-in">
+				In practice, this means I can write a service that depends on a <code>DatabaseClient</code> and a <code>Logger</code>, test it with in-memory fakes, and deploy it with real implementations — without changing a single line in the service itself. The wiring is type-safe all the way through.
+			</p>
+
+			<h3 class="fade-in">Structured concurrency</h3>
+
+			<p class="fade-in">
+				Async code in TypeScript is full of traps. Fire-and-forget promises, unhandled rejections, race conditions from concurrent operations that nobody synchronized. Effect's concurrency model borrows from structured concurrency: every concurrent operation has a well-defined lifetime, and child operations can't outlive their parent scope.
+			</p>
+
+			<p class="fade-in">
+				This matters when you're building something like an IoT dashboard (which I do at Buildlinx) where you might be polling hardware endpoints, listening to WebSocket events, and running periodic health checks — all at the same time. Without structured concurrency, those operations can leak, overlap, or silently fail. Effect gives you primitives like <code>Fiber</code>, <code>Scope</code>, and <code>Schedule</code> that make this manageable and — crucially — observable through the types.
+			</p>
+
+			<h3 class="fade-in">Composability</h3>
+
+			<p class="fade-in">
+				The thing that keeps me reaching for Effect is how it composes. Small Effects combine into bigger ones. Error channels merge automatically. Dependencies bubble up to the top. You build complex pipelines from tiny, testable pieces, and the type system tracks everything for you.
+			</p>
+
+			<p class="fade-in">
+				This is the opposite of how most TypeScript is written. Usually, complexity accumulates in god-functions that do five things, catch errors generically, and pass around context through closures. Effect pushes you toward small, declarative steps. The result is code that's easier to read, test, and refactor — even if the initial learning curve is steep.
+			</p>
+
+			<div class="pull-quote fade-in">
+				You build complex systems from small, typed pieces. The compiler tracks the errors, the dependencies, and the concurrency for you.
+			</div>
+
+			<h3 class="fade-in">Where it fits in my stack</h3>
+
+			<p class="fade-in">
+				I don't use Effect for everything. A simple React component doesn't need it. But wherever there's meaningful business logic — API routes, data pipelines, anything with multiple failure modes — it's become my default. It pairs naturally with the rest of my type-safety stack: Zod validates at the boundary, tRPC carries types across the network, Drizzle types the database, and Effect handles the logic in between.
+			</p>
+
+			<p class="fade-in">
+				The German market hasn't caught up yet. Most companies here are still on the Java/Spring or PHP/Symfony track, and even TypeScript-forward teams rarely know about Effect. The community is still concentrated around the SF/Twitter bubble — Vercel, Theo's audience, the fp-ts diaspora. But it's growing fast, and the companies that adopt it now are the ones building the most robust TypeScript systems I've seen.
+			</p>
+
+			<h3 class="fade-in">The learning curve is real</h3>
+
+			<p class="fade-in">
+				I won't pretend Effect is easy to pick up. The API surface is large, the functional programming idioms can feel foreign if you're coming from imperative TypeScript, and the documentation is still maturing. I spent weeks being confused before it started paying off.
+			</p>
+
+			<p class="fade-in" style="margin-bottom: 0;">
+				But the payoff is substantial. Once you've modelled your domain with Effect, the types do the heavy lifting. Refactoring becomes safe because the compiler tells you exactly what broke. Adding a new error case forces you to handle it everywhere. And the code reads like a description of what it does, not a maze of callbacks and catch blocks. For me, it's the natural next step after adopting Zod and tRPC — the missing piece that makes the entire stack truly type-safe.
+			</p>
+
+		</article>
+
+		<div class="wide-container"><hr class="editorial-hr" /></div>
+
+		<!-- Footer -->
+		<footer class="container" style="padding-top: 40px; padding-bottom: 64px;">
+			<a href="/2" class="back-link">
+				<span style="font-size: 14px;">←</span> Back to overview
+			</a>
+		</footer>
+
+		<script>
+			const observer = new IntersectionObserver(
+				(entries) => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }); },
+				{ threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+			);
+			document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+		</script>
+
+	</body>
+</html>
