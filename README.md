@@ -1,43 +1,49 @@
-# Astro Starter Kit: Minimal
+# haukeschnau.de
 
-```sh
-bun create astro@latest -- --template minimal
+Personal website built with Astro and Tailwind CSS.
+
+## Development
+
+```bash
+bun install
+bun run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Nix
 
-## 🚀 Project Structure
+Build the static site package:
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+nix build .#site
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+`packages.default` points at the same output, so `nix build` also works.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Build the layered OCI image on Linux:
 
-Any static assets, like images, can be placed in the `public/` directory.
+```bash
+nix build .#image-site
+```
 
-## 🧞 Commands
+The image is a Docker-compatible tarball produced with `dockerTools.buildLayeredImage`
+and serves the static Astro output with Caddy.
 
-All commands are run from the root of the project, from a terminal:
+## Dependency Hashes
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `bun install`             | Installs dependencies                            |
-| `bun dev`             | Starts local dev server at `localhost:4321`      |
-| `bun build`           | Build your production site to `./dist/`          |
-| `bun preview`         | Preview your build locally, before deploying     |
-| `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `bun astro -- --help` | Get help using the Astro CLI                     |
+The Bun dependency closure is pinned through `depsHashBySystem` in
+`nix/site.nix`.
 
-## 👀 Want to learn more?
+Print the current-system hash:
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+```bash
+nix run .#update-deps -- site
+```
+
+Compute and write the hash for the current system:
+
+```bash
+nix run .#update-deps -- site --write
+```
+
+When `bun.lock` changes, update the hash for each target system that should build
+this repository.

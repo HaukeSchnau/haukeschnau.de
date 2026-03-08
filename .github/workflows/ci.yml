@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - "**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    name: Build site package
+    uses: schnau-dev/.github/.github/workflows/reusable-nix-ci.yml@main
+    with:
+      command: nix build --accept-flake-config .#site
+
+  image:
+    name: Build and publish site image
+    permissions:
+      contents: read
+      packages: write
+    uses: schnau-dev/.github/.github/workflows/reusable-nix-image-publish.yml@main
+    with:
+      image-attr: image-site
+      image-name: ghcr.io/schnau-dev/haukeschnau.de
+      push-enabled: ${{ github.event_name == 'push' }}

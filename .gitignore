@@ -1,10 +1,13 @@
 # build output
 dist/
+result
+result-*
 # generated types
 .astro/
 
 # dependencies
 node_modules/
+package-lock.json
 
 # logs
 npm-debug.log*
